@@ -7,7 +7,7 @@
       "request": "launch",
       "type": "cortex-debug",
       "servertype": "stutil",
-      "device": "STM32F103C8",
+      "device": "STM32F411RE",
       "interface": "swd",
       "runToEntryPoint": "main",
       "showDevDebugOutput": "raw",
@@ -20,7 +20,7 @@
       "request": "attach",
       "type": "cortex-debug",
       "servertype": "stutil",
-      "device": "STM32F103C8",
+      "device": "STM32F411RE",
       "runToEntryPoint": "main",
       "interface": "swd"
     }

@@ -26,26 +26,28 @@ FetchContent_MakeAvailable(libopencm3)
 
 # create a target to build libopencm3 -- only for the target we need
 add_custom_target(libopencm3 
-  COMMAND wsl make TARGETS=stm32/f1
+  COMMAND wsl make TARGETS=stm32/f4
   WORKING_DIRECTORY ${libopencm3_SOURCE_DIR}
 )
 
 # Create a specific CPU target with the appropriate options etc
 add_library(stm32 STATIC IMPORTED)
 set_property(TARGET stm32 PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${libopencm3_SOURCE_DIR}/include)
-set_property(TARGET stm32 PROPERTY IMPORTED_LOCATION ${libopencm3_SOURCE_DIR}/lib/libopencm3_stm32f1.a)
+set_property(TARGET stm32 PROPERTY IMPORTED_LOCATION ${libopencm3_SOURCE_DIR}/lib/libopencm3_stm32f4.a)
 add_dependencies(stm32 libopencm3)
 target_link_directories(stm32 INTERFACE ${libopencm3_SOURCE_DIR}/lib)
 
-target_compile_definitions(stm32 INTERFACE -DSTM32F1)
+target_compile_definitions(stm32 INTERFACE -DSTM32F4)
 
 set(COMPILE_OPTIONS 
   --static
   -nostartfiles
   -fno-common
-  -mcpu=cortex-m3
+  -mcpu=cortex-m4
   -mthumb
-  -mfpu=fpv5-d16
+  -mfpu=fpv4-sp-d16
+  -mfloat-abi=hard
+  -mabi=aapcs
 )
 
 target_compile_options(stm32 INTERFACE ${COMPILE_OPTIONS})
