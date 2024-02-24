@@ -1,6 +1,6 @@
 # stm32-libopencm3-cmake-blink
 
-This simple project gives an example of how to use CMake + [`libopencm3`](https://github.com/libopencm3/libopencm3) for stm32 development with C++. A specific example is given for the stm32f765 cpu. The `blink` example comes from libopencm3's [miniblink](https://github.com/libopencm3/libopencm3-miniblink). The `openocd` tool is used for flashing with a stlink-v2.
+This simple project gives an example of how to use CMake + [`libopencm3`](https://github.com/libopencm3/libopencm3) for stm32 development with C++. A specific example is given for the stm32f411 cpu. The `blink` example comes from libopencm3's [miniblink](https://github.com/libopencm3/libopencm3-miniblink). The `openocd` tool is used for flashing with a stlink-v2.
 
 ### Prerequisites
 
