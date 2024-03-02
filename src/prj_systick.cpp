@@ -1,7 +1,11 @@
 #include "prj_systick.hpp"
+
+extern "C"
+{
 #include "libopencm3/cm3/systick.h"
 #include "libopencm3/stm32/rcc.h"
-#include "libopencm3/cm3/nvic.h"
+#include "libopencm3/cm3/nvic.h"  
+}
 
 static volatile uint64_t system_time = 0U;
 

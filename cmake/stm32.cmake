@@ -37,6 +37,10 @@ set_property(TARGET stm32 PROPERTY IMPORTED_LOCATION ${libopencm3_SOURCE_DIR}/li
 add_dependencies(stm32 libopencm3)
 target_link_directories(stm32 INTERFACE ${libopencm3_SOURCE_DIR}/lib)
 
+file(GLOB_RECURSE LIBOPENCM3_SOURCES "${libopencm3_SOURCE_DIR}/lib/*.c")
+add_custom_target(libopencm3_sources SOURCES ${LIBOPENCM3_SOURCES})
+add_dependencies(stm32 libopencm3_sources)
+
 target_compile_definitions(stm32 INTERFACE -DSTM32F4)
 
 set(COMPILE_OPTIONS 
