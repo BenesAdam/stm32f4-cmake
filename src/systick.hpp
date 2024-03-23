@@ -1,7 +1,7 @@
-#ifndef PRJ_SYSTICK_HPP
-#define PRJ_SYSTICK_HPP
+#ifndef systick_HPP
+#define systick_HPP
 
-#include "common-defines.h"
+#include "types.h"
 
 class cSysTick
 {
@@ -13,4 +13,4 @@ public:
   static void Wait(uint64_t ms);
 };
 
-#endif /* PRJ_SYSTICK_HPP */
+#endif /* systick_HPP */

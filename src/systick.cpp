@@ -1,4 +1,4 @@
-#include "prj_systick.hpp"
+#include "systick.hpp"
 
 extern "C"
 {
@@ -16,6 +16,10 @@ extern "C" void sys_tick_handler(void)
 
 void cSysTick::Setup(void)
 {
+  // Configure general clock
+  rcc_clock_setup_pll(&rcc_hsi_configs[RCC_CLOCK_3V3_96MHZ]);
+
+  // Configure system timer
   systick_set_frequency(cSysTick::Frequency, rcc_ahb_frequency);
   systick_counter_enable();
   systick_interrupt_enable();
