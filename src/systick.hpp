@@ -6,11 +6,12 @@
 class cSysTick
 {
 public:
-  static const uint32_t Frequency = 10000U; // 10kHz (every 100us)
+  static const uint32_t Frequency = 1000000U; // 1MHz
   static void Setup(void);
-  static uint64_t Get(void);
   static uint64_t Millis(void);
-  static void Wait(uint64_t ms);
+  static uint64_t Micros(void);
+  static void DelayMs(uint64_t milliseconds);
+  static void DelayUs(uint64_t microseconds);
 };
 
 #endif /* systick_HPP */

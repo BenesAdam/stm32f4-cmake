@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "stm32",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "compileCommands": "${workspaceFolder}/out/compile_commands.json",
             "defines": [
                 "STM32F4",
                 "__ARM_ARCH_7EM__"
