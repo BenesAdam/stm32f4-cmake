@@ -8,15 +8,24 @@ include(cmake/stm32.cmake)
 
 add_executable(firmware 
   src/main.cpp
-  src/types.h
   src/systick.cpp
   src/systick.hpp
   src/i2c1.cpp
   src/i2c1.hpp
   src/display.cpp
   src/display.hpp
+  src/display_character_map.cpp
+  src/display_character_map.hpp
 )
 
 target_link_libraries(firmware stm32)
 set_property(TARGET firmware PROPERTY CXX_STANDARD 17)
-stm32_add_linker_script(firmware PRIVATE linker/basic.stm32.ld)
+stm32_add_linker_script(firmware PRIVATE linker/STM32F411xE.ld)
+
+# Common
+add_subdirectory(src/common)
+target_link_libraries(firmware common)
+
+# Map
+add_subdirectory(src/map)
+target_link_libraries(firmware map)

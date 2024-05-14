@@ -18,6 +18,9 @@ public:
   };
 
   static void Setup(void);
+  static void WriteByte(const uint8_t arg_address, const uint8_t arg_data);
+  static uint8_t ReadByte(const uint8_t arg_address);
+  static uint8_t WriteReadByte(const uint8_t arg_address, const uint8_t arg_data);
 
 private:
 };

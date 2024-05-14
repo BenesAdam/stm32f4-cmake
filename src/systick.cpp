@@ -25,21 +25,29 @@ void cSysTick::Setup(void)
   systick_interrupt_enable();
 }
 
-// Returns number of tenths of milliseconds (1 tick == 0.1ms)
-uint64_t cSysTick::Get(void)
+// Returns number of microseconds
+uint64_t cSysTick::Micros(void)
 {
   return system_time;
 }
 
 uint64_t cSysTick::Millis(void)
 {
-  return cSysTick::Get() / 10ULL;
+  return cSysTick::Micros() / 1000ULL;
 }
 
-void cSysTick::Wait(uint64_t ms)
+void cSysTick::DelayMs(uint64_t milliseconds)
 {
-  const uint64_t endTimeInTenthOfMs = cSysTick::Get() + (ms * 10ULL);
-  while(cSysTick::Get() < endTimeInTenthOfMs)
+  const uint64_t endTimeInMicros = cSysTick::Micros() + (milliseconds * 1000ULL);
+  while(cSysTick::Micros() <= endTimeInMicros)
+  {
+  }
+}
+
+void cSysTick::DelayUs(uint64_t microseconds)
+{
+  const uint64_t endTimeInMicros = cSysTick::Micros() + microseconds;
+  while(cSysTick::Micros() <= endTimeInMicros)
   {
   }
 }

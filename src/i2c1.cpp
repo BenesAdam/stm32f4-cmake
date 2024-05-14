@@ -26,3 +26,22 @@ void cI2C1::Setup(void)
   
   i2c_peripheral_enable(I2C1);
 }
+
+void cI2C1::WriteByte(const uint8_t arg_address, const uint8_t arg_data)
+{
+  i2c_transfer7(I2C1, arg_address, &arg_data, 1U, nullptr, 0U);
+}
+
+uint8_t cI2C1::ReadByte(const uint8_t arg_address)
+{
+  uint8_t result = 0U;
+  i2c_transfer7(I2C1, arg_address, nullptr, 0U, &result, 1U);
+  return result;
+}
+
+uint8_t cI2C1::WriteReadByte(const uint8_t arg_address, const uint8_t arg_data)
+{
+  uint8_t result = 0U;
+  i2c_transfer7(I2C1, arg_address, &arg_data, 1U, &result, 1U);
+  return result;
+}

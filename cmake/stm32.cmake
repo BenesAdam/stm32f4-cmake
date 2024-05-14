@@ -138,7 +138,8 @@ set(COMPILE_OPTIONS
 
 set(LINKER_OPTIONS
   ${COMPILE_OPTIONS}
-  -Wl,-Map=${CMAKE_PROJECT_NAME}.map -Wl,--cref
+  -Wl,-Map=${CMAKE_PROJECT_NAME}.map
+  -Wl,--cref
 )
 
 target_compile_options(stm32 INTERFACE ${COMPILE_OPTIONS})
