@@ -3,7 +3,7 @@
     {
       "name": "ST-Link: Debug Application",
       "cwd": "${workspaceFolder}",
-      "executable": "./out/firmware.elf",
+      "executable": "./build/app/firmware.elf",
       "request": "launch",
       "type": "cortex-debug",
       "servertype": "stutil",
@@ -16,7 +16,7 @@
     {
       "name": "ST-Link: Attach to active",
       "cwd": "${workspaceFolder}",
-      "executable": "./out/firmware.elf",
+      "executable": "./build/app/firmware.elf",
       "request": "attach",
       "type": "cortex-debug",
       "servertype": "stutil",

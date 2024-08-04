@@ -1,5 +1,2 @@
-cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
-project(common)
-
-add_library(common INTERFACE)
+add_library(common INTERFACE types.h)
 target_include_directories(common INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")

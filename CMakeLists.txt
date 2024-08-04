@@ -1,31 +1,24 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 set(CMAKE_TOOLCHAIN_FILE cmake/toolchain-arm-none-eabi-gcc.cmake)
-set(CMAKE_COLOR_MAKEFILE OFF) # disable color output - not working in vscode output window
 
 project(firmware VERSION 0.1.0 LANGUAGES CXX C ASM)
 
-include(cmake/stm32.cmake)
+# Variables
+#   Build
+set(CMAKE_COLOR_MAKEFILE OFF) # disable color output - not working in vscode output window
 
-add_executable(firmware 
-  src/main.cpp
-  src/systick.cpp
-  src/systick.hpp
-  src/i2c1.cpp
-  src/i2c1.hpp
-  src/display.cpp
-  src/display.hpp
-  src/display_character_map.cpp
-  src/display_character_map.hpp
-)
+#   C/C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-target_link_libraries(firmware stm32)
-set_property(TARGET firmware PROPERTY CXX_STANDARD 17)
-stm32_add_linker_script(firmware PRIVATE linker/STM32F411xE.ld)
+# Modules
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(ConfigSafeGuards)
+include(AddGitSubmodule)
+include(Libopencm3)
 
-# Common
-add_subdirectory(src/common)
-target_link_libraries(firmware common)
-
-# Map
-add_subdirectory(src/map)
-target_link_libraries(firmware map)
+# Subdirectories
+add_subdirectory(src)
+add_subdirectory(app)
