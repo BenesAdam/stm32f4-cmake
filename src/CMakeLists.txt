@@ -1,0 +1,5 @@
+add_subdirectory(common)
+add_subdirectory(display)
+add_subdirectory(i2c)
+add_subdirectory(map)
+add_subdirectory(systick)

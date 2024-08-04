@@ -6,7 +6,7 @@
     {
       "label": "build_debug",
       "type": "shell",
-      "command": "cmake --build ${workspaceFolder}/out --config Debug --target firmware -j 6",
+      "command": "cmake --build ${workspaceFolder}/build --config Debug --target firmware -j 6",
       "problemMatcher": "$gcc"
     }
   ]
