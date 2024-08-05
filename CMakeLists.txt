@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
-set(CMAKE_TOOLCHAIN_FILE cmake/toolchain-arm-none-eabi-gcc.cmake)
+
+if(CMAKE_TOOLCHAIN_FILE)
+    message(STATUS "Toolchain: ${CMAKE_TOOLCHAIN_FILE}")
+endif()
 
 project(firmware VERSION 0.1.0 LANGUAGES CXX C ASM)
 
 # Variables
-#   Build
-set(CMAKE_COLOR_MAKEFILE OFF) # disable color output - not working in vscode output window
-
 #   C/C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
