@@ -30,6 +30,26 @@ endif()
 set(LIBOPENCM3_LIBRARY ${LIBOPENCM3_SOURCE_DIR}/lib/libopencm3_stm32f4.a)
 set(LIBOPENCM3_MAKE_DATABASE ${CMAKE_CURRENT_BINARY_DIR}/libopencm3_make_database.txt)
 
+# --- Precompilation settings
+set(PRECOMPILED_DIR "${CMAKE_SOURCE_DIR}/precompiled/stm32f4")
+set(PRECOMPILED_FILES 
+    "${LIBOPENCM3_RELATIVE_DIR}/lib/stm32/f4/vector_nvic.c"
+    "${LIBOPENCM3_RELATIVE_DIR}/include/libopencmsis/stm32/f4/irqhandlers.h"
+    "${LIBOPENCM3_RELATIVE_DIR}/include/libopencm3/stm32/f4/nvic.h"
+    "${LIBOPENCM3_RELATIVE_DIR}/lib/libopencm3_stm32f4.a"
+    "build/libopencm3_make_database.txt"
+)
+
+# --- Load precompilated files
+if(ENABLE_LIBOPENCM3_USE_PRECOMPILED)
+    message(STATUS "Precompiled libopencm3 files used:")
+    foreach(PRECOMPILED_FILE ${PRECOMPILED_FILES})
+        message(STATUS "  * ${PRECOMPILED_FILE}")
+        configure_file("${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" "${CMAKE_SOURCE_DIR}/${PRECOMPILED_FILE}" COPYONLY)
+    endforeach()
+endif()
+
+# --- Build libopencm3
 if(NOT EXISTS ${LIBOPENCM3_LIBRARY})
     # --- Find MSYS sh.exe
     find_program(SH_EXECUTABLE NAMES sh.exe)
@@ -69,6 +89,16 @@ if(NOT EXISTS ${LIBOPENCM3_LIBRARY})
     message(STATUS "Libopencm3 ${LIBOPENCM3_TARGET} building - done")
 endif()
 
+# --- Store precompilated files
+if(ENABLE_LIBOPENCM3_STORE_PRECOMPILED)
+    message(STATUS "Precompiled libopencm3 files stored:")
+    file(REMOVE_RECURSE ${PRECOMPILED_DIR})
+    foreach(PRECOMPILED_FILE ${PRECOMPILED_FILES})
+        message(STATUS "  * ${PRECOMPILED_FILE}")
+        configure_file("${CMAKE_SOURCE_DIR}/${PRECOMPILED_FILE}" "${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" COPYONLY)
+    endforeach()
+endif()
+
 #==============================================================================
 # Remove unused source files
 #==============================================================================
@@ -106,7 +136,7 @@ if(EXISTS ${LIBOPENCM3_MAKE_DATABASE})
     endforeach()
 
     foreach(LIBOPENCM3_UNUSED_SOURCE_FILE ${LIBOPENCM3_UNUSED_SOURCE_FILES})
-        file(REMOVE "${LIBOPENCM3_UNUSED_SOURCE_FILE}")
+        # file(REMOVE "${LIBOPENCM3_UNUSED_SOURCE_FILE}")
     endforeach()
 endif()
 
