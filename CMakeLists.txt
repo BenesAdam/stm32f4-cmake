@@ -13,6 +13,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+#   Options
+option(ENABLE_LIBOPENCM3_USE_PRECOMPILED "Whether to use precompiled libopencm3 (make sure you are on disk S:)" OFF)
+option(ENABLE_LIBOPENCM3_STORE_PRECOMPILED "Whether to store precompiled libopencm3 (make sure you are on disk S:)" OFF)
+
 # Modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 include(ConfigSafeGuards)

@@ -1,4 +1,4 @@
-build/
-out/
-.vs/
-external/libopencm3
+/build/
+/out/
+/.vs/
+/external/libopencm3
