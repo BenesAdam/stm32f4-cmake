@@ -3,7 +3,7 @@
 #==============================================================================
 set(LIBOPENCM3_GIT_URL "https://github.com/libopencm3/libopencm3")
 set(LIBOPENCM3_RELATIVE_DIR "external/libopencm3")
-set(LIBOPENCM3_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${LIBOPENCM3_RELATIVE_DIR}")
+set(LIBOPENCM3_SOURCE_DIR "${PROJECT_SOURCE_DIR}/${LIBOPENCM3_RELATIVE_DIR}")
 
 # Make sure git is installed on system
 find_package(Git REQUIRED)
@@ -31,7 +31,7 @@ set(LIBOPENCM3_LIBRARY ${LIBOPENCM3_SOURCE_DIR}/lib/libopencm3_stm32f4.a)
 set(LIBOPENCM3_MAKE_DATABASE ${CMAKE_CURRENT_BINARY_DIR}/libopencm3_make_database.txt)
 
 # --- Precompilation settings
-set(PRECOMPILED_DIR "${CMAKE_SOURCE_DIR}/precompiled/stm32f4")
+set(PRECOMPILED_DIR "${PROJECT_SOURCE_DIR}/precompiled/stm32f4")
 set(PRECOMPILED_FILES 
     "${LIBOPENCM3_RELATIVE_DIR}/lib/stm32/f4/vector_nvic.c"
     "${LIBOPENCM3_RELATIVE_DIR}/include/libopencmsis/stm32/f4/irqhandlers.h"
@@ -45,7 +45,7 @@ if(ENABLE_LIBOPENCM3_USE_PRECOMPILED)
     message(STATUS "Precompiled libopencm3 files used:")
     foreach(PRECOMPILED_FILE ${PRECOMPILED_FILES})
         message(STATUS "  * ${PRECOMPILED_FILE}")
-        configure_file("${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" "${CMAKE_SOURCE_DIR}/${PRECOMPILED_FILE}" COPYONLY)
+        configure_file("${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" "${PROJECT_SOURCE_DIR}/${PRECOMPILED_FILE}" COPYONLY)
     endforeach()
 endif()
 
@@ -95,7 +95,7 @@ if(ENABLE_LIBOPENCM3_STORE_PRECOMPILED)
     file(REMOVE_RECURSE ${PRECOMPILED_DIR})
     foreach(PRECOMPILED_FILE ${PRECOMPILED_FILES})
         message(STATUS "  * ${PRECOMPILED_FILE}")
-        configure_file("${CMAKE_SOURCE_DIR}/${PRECOMPILED_FILE}" "${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" COPYONLY)
+        configure_file("${PROJECT_SOURCE_DIR}/${PRECOMPILED_FILE}" "${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" COPYONLY)
     endforeach()
 endif()
 

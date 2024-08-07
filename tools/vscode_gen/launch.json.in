@@ -1,0 +1,38 @@
+{
+  "configurations": [
+    {
+      "name": "ST-Link: Debug Application",
+      "cwd": "@CMAKE_SOURCE_DIR@",
+      "executable": "@LAUNCH_EXECUTABLE_FILE@",
+      "request": "launch",
+      "type": "cortex-debug",
+      "servertype": "stutil",
+      "device": "@LAUNCH_DEVICE@",
+      "configFiles": [
+        "@LAUNCH_IFC_CONFIG_FILE@",
+        "@LAUNCH_STM_CONFIG_FILE@"
+      ],
+      "svdFile": "@LAUNCH_SYSTEM_VIEW_DESCRIPTION_FILE@",
+      "interface": "swd",
+      "runToEntryPoint": "main",
+      "showDevDebugOutput": "raw",
+      "preLaunchTask": "build_debug"
+    },
+    {
+      "name": "ST-Link: Attach to active",
+      "cwd": "@CMAKE_SOURCE_DIR@",
+      "executable": "@LAUNCH_EXECUTABLE_FILE@",
+      "request": "attach",
+      "type": "cortex-debug",
+      "servertype": "stutil",
+      "device": "@LAUNCH_DEVICE@",
+      "configFiles": [
+        "@LAUNCH_IFC_CONFIG_FILE@",
+        "@LAUNCH_STM_CONFIG_FILE@"
+      ],
+      "svdFile": "@LAUNCH_SYSTEM_VIEW_DESCRIPTION_FILE@",
+      "runToEntryPoint": "main",
+      "interface": "swd"
+    }
+  ]
+}

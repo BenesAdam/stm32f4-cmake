@@ -9,5 +9,5 @@ target_link_libraries(firmware
     systick
 )
 
-set(LINKER_SCRIPT_FILE ${CMAKE_SOURCE_DIR}/linker/STM32F411xE.ld)
+set(LINKER_SCRIPT_FILE ${PROJECT_SOURCE_DIR}/linker/STM32F411xE.ld)
 stm32_add_linker_script(firmware PRIVATE ${LINKER_SCRIPT_FILE})
