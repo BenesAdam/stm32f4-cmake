@@ -17,8 +17,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(ENABLE_LIBOPENCM3_USE_PRECOMPILED "Whether to use precompiled libopencm3 (make sure you are on disk S:)" OFF)
 option(ENABLE_LIBOPENCM3_STORE_PRECOMPILED "Whether to store precompiled libopencm3 (make sure you are on disk S:)" OFF)
 
+option(ENABLE_UNIT_TEST "Whether to enable unit testing." OFF)
+
 # Modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(CPM)
 include(ConfigSafeGuards)
 include(AddGitSubmodule)
 include(Libopencm3)
@@ -26,4 +29,10 @@ include(Libopencm3)
 # Subdirectories
 add_subdirectory(src)
 add_subdirectory(tools)
-add_subdirectory(app)
+if(ENABLE_UNIT_TEST)
+    include(CTest)
+    enable_testing()
+    add_subdirectory(tests)
+else()
+    add_subdirectory(app)
+endif()

@@ -48,10 +48,16 @@ CMAKE_DEFINITIONS ?= \
 	$(TOOLCHAIN_DEF_CMAKE)
 	# end of line
 
+CMAKE_DEFINITIONS_UNIT_TESTING ?= \
+	$(BUILD_TYPE_DEF_CMAKE)\
+	$(USE_PRECOMP_DEF_CMAKE)\
+  -DENABLE_UNIT_TEST=ON\
+	# end of line
+
 #-----------------------------------------------------------------------------+
 # Targets                                                                     |
 #-----------------------------------------------------------------------------+
-.PHONY: remove remove_all generate compile target clean help
+.PHONY: remove remove_all generate compile target clean unit_test help
 default: help
 
 # >----------------------------------------------------------------------------
@@ -100,6 +106,12 @@ clean:
 	@echo "Cleaning up build artifacts..."
 	@$(MAKE) target t=clean
 	@echo "Clean up finished."
+
+# >----------------------------------------------------------------------------
+unit_test:
+	@echo "Generating CMake files for unit testing..."
+	@cmake -S . -B build/ -G Ninja $(CMAKE_DEFINITIONS_UNIT_TESTING)
+	@echo "CMake files generated."
 
 # >----------------------------------------------------------------------------
 help:

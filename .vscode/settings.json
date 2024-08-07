@@ -1,6 +1,7 @@
 {
   "files.associations": {
-    "charconv": "cpp"
+    "charconv": "cpp",
+    "xmemory": "cpp"
   },
   "[cmake]": {
     "editor.tabSize": 4,
