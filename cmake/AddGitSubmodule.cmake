@@ -3,7 +3,7 @@ function(add_git_submodule arg_relative_dir)
     find_package(Git REQUIRED)
 
     # Clone and update submodule
-    set(FULL_DIR ${CMAKE_SOURCE_DIR}/${arg_relative_dir})
+    set(FULL_DIR ${PROJECT_SOURCE_DIR}/${arg_relative_dir})
 
     if(NOT EXISTS ${FULL_DIR}/CMakeLists.txt)
         execute_process(

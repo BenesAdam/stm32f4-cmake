@@ -30,7 +30,7 @@ VERBOSE_FLAG ?= $(if $(filter 1,$(V)),-v,)
 #-----------------------------------------------------------------------------+
 # Makefile generation                                                         |
 #-----------------------------------------------------------------------------+
-CMAKE_FILES := CMakeLists.txt $(wildcard **/CMakeLists.txt) $(wildcard **/*.cmake)
+CMAKE_FILES := CMakeLists.txt $(wildcard **/CMakeLists.txt) $(wildcard **/*.cmake) $(wildcard **/**/*.cmake)
 CMAKE_GEN_MAKEFILE := build/Makefile
 
 #-----------------------------------------------------------------------------+
@@ -67,6 +67,13 @@ remove_all: remove
 	@echo "External libopencm3 folder cleaned."
 
 # >----------------------------------------------------------------------------
+$(CMAKE_GEN_MAKEFILE): $(CMAKE_FILES)
+	@echo "Generating CMake files..."
+	@cmake -S . -B build/ -G Ninja $(CMAKE_DEFINITIONS)
+	@touch $(CMAKE_GEN_MAKEFILE)
+	@echo "CMake files generated."
+
+# >----------------------------------------------------------------------------
 generate: $(CMAKE_GEN_MAKEFILE)
 	@echo "Build system generated."
 
@@ -75,13 +82,6 @@ compile: generate
 	@echo "Compiling the project..."
 	@cmake --build build/ -j$(shell nproc) $(VERBOSE_FLAG) --
 	@echo "Compilation finished."
-
-# >----------------------------------------------------------------------------
-$(CMAKE_GEN_MAKEFILE): $(CMAKE_FILES)
-	@echo "Generating CMake files..."
-	@cmake -S . -B build/ -G Ninja $(CMAKE_DEFINITIONS)
-	@touch $(CMAKE_GEN_MAKEFILE)
-	@echo "CMake files generated."
 
 # >----------------------------------------------------------------------------
 target:

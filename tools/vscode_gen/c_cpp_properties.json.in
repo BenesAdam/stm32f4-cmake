@@ -2,10 +2,10 @@
     "configurations": [
         {
             "name": "stm32",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "compileCommands": "@PROJECT_SOURCE_DIR@/build/compile_commands.json",
             "defines": [
-                "STM32F4",
-                "__ARM_ARCH_7EM__"
+                "@C_CPP_PROPERTIES_DEVICE@",
+                "@C_CPP_PROPERTIES_ARCH@"
             ],
             "intelliSenseMode": "gcc-arm",
             "cStandard": "c17",
