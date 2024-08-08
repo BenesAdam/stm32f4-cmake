@@ -110,8 +110,9 @@ clean:
 # >----------------------------------------------------------------------------
 unit_test:
 	@echo "Generating CMake files for unit testing..."
-	@cmake -S . -B build/ -G Ninja $(CMAKE_DEFINITIONS_UNIT_TESTING)
-	@echo "CMake files generated."
+	@cmake -S . -B build/ $(CMAKE_DEFINITIONS_UNIT_TESTING)
+#	@cmake --build build/ -t unit_tests -- -s
+	@cd build && ctest -R COnly
 
 # >----------------------------------------------------------------------------
 help:

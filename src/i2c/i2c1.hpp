@@ -3,10 +3,15 @@
 
 #include "types.h"
 
+#if (USE_LIBOPENCM3 == 1)
 extern "C"
 {
 #include "libopencm3/stm32/i2c.h"
 }
+#else
+#define I2C_READ 0
+#define I2C_WRITE 1
+#endif
 
 class cI2C1
 {

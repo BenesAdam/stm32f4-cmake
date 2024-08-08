@@ -24,7 +24,10 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 include(CPM)
 include(ConfigSafeGuards)
 include(AddGitSubmodule)
-include(Libopencm3)
+
+if(NOT ENABLE_UNIT_TEST)
+    include(Libopencm3)
+endif()
 
 # Subdirectories
 add_subdirectory(src)

@@ -1,11 +1,13 @@
 #include "systick.hpp"
 
+#if (USE_LIBOPENCM3 == 1)
 extern "C"
 {
 #include "libopencm3/cm3/systick.h"
 #include "libopencm3/stm32/rcc.h"
-#include "libopencm3/cm3/nvic.h"  
+#include "libopencm3/cm3/nvic.h"
 }
+#endif
 
 static volatile uint64_t system_time = 0U;
 
@@ -16,6 +18,7 @@ extern "C" void sys_tick_handler(void)
 
 void cSysTick::Setup(void)
 {
+#if (USE_LIBOPENCM3 == 1)
   // Configure general clock
   rcc_clock_setup_pll(&rcc_hsi_configs[RCC_CLOCK_3V3_96MHZ]);
 
@@ -23,6 +26,7 @@ void cSysTick::Setup(void)
   systick_set_frequency(cSysTick::Frequency, rcc_ahb_frequency);
   systick_counter_enable();
   systick_interrupt_enable();
+#endif
 }
 
 // Returns number of microseconds
@@ -39,15 +43,19 @@ uint64_t cSysTick::Millis(void)
 void cSysTick::DelayMs(uint64_t milliseconds)
 {
   const uint64_t endTimeInMicros = cSysTick::Micros() + (milliseconds * 1000ULL);
-  while(cSysTick::Micros() <= endTimeInMicros)
+#if (USE_LIBOPENCM3 == 1)
+  while (cSysTick::Micros() <= endTimeInMicros)
   {
   }
+#endif
 }
 
 void cSysTick::DelayUs(uint64_t microseconds)
 {
   const uint64_t endTimeInMicros = cSysTick::Micros() + microseconds;
-  while(cSysTick::Micros() <= endTimeInMicros)
+#if (USE_LIBOPENCM3 == 1)
+  while (cSysTick::Micros() <= endTimeInMicros)
   {
   }
+#endif
 }
