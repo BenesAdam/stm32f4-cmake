@@ -110,9 +110,9 @@ clean:
 # >----------------------------------------------------------------------------
 unit_test:
 	@echo "Generating CMake files for unit testing..."
-	@cmake -S . -B build/ $(CMAKE_DEFINITIONS_UNIT_TESTING)
-#	@cmake --build build/ -t unit_tests -- -s
-	@cd build && ctest -R COnly
+	@cmake -S . -B build/ -G 'Visual Studio 17 2022' $(CMAKE_DEFINITIONS_UNIT_TESTING)
+	@cmake --build build/ -t ALL_BUILD --
+	@cmake --build build/ -t RUN_TESTS --
 
 # >----------------------------------------------------------------------------
 help:
