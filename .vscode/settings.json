@@ -1,10 +1,27 @@
 {
-  "files.associations": {
-    "charconv": "cpp"
-  },
   "[cmake]": {
     "editor.tabSize": 4,
-    "editor.insertSpaces": true,
+    "editor.insertSpaces": true
   },
-  "cortex-debug.variableUseNaturalFormat": false
+  "cortex-debug.variableUseNaturalFormat": false,
+  "cmake.buildDirectory": "${workspaceFolder}/build/ut",
+  "cmake.deleteBuildDirOnCleanConfigure": true,
+  "cmake.debugConfig": {
+    "externalConsole": true
+  },
+  "cmake.configureArgs": [
+    "-DENABLE_LIBOPENCM3_USE_PRECOMPILED=ON",
+    "-DCMAKE_BUILD_TYPE=Debug",
+    "-DENABLE_UNIT_TEST=ON"
+  ],
+  "cmake.preferredGenerators": [
+    "Visual Studio 17 2022",
+    "Visual Studio 16 2019",
+    "Visual Studio 15 2017",
+    "Visual Studio 14 2015",
+    "Visual Studio 12 2013",
+    "Visual Studio 11 2012",
+    "Visual Studio 10 2010",
+    "Visual Studio 9 2008"
+  ]
 }

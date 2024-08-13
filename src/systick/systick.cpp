@@ -4,7 +4,7 @@ extern "C"
 {
 #include "libopencm3/cm3/systick.h"
 #include "libopencm3/stm32/rcc.h"
-#include "libopencm3/cm3/nvic.h"  
+#include "libopencm3/cm3/nvic.h"
 }
 
 static volatile uint64_t system_time = 0U;
@@ -39,15 +39,19 @@ uint64_t cSysTick::Millis(void)
 void cSysTick::DelayMs(uint64_t milliseconds)
 {
   const uint64_t endTimeInMicros = cSysTick::Micros() + (milliseconds * 1000ULL);
-  while(cSysTick::Micros() <= endTimeInMicros)
+#ifndef UNIT_TEST
+  while (cSysTick::Micros() <= endTimeInMicros)
   {
   }
+#endif
 }
 
 void cSysTick::DelayUs(uint64_t microseconds)
 {
   const uint64_t endTimeInMicros = cSysTick::Micros() + microseconds;
-  while(cSysTick::Micros() <= endTimeInMicros)
+#ifndef UNIT_TEST
+  while (cSysTick::Micros() <= endTimeInMicros)
   {
   }
+#endif
 }

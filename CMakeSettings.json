@@ -1,0 +1,15 @@
+﻿{
+  "configurations": [
+    {
+      "name": "ut",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\build\\visual\\${name}",
+      "installRoot": "${projectDir}\\build\\visual\\${name}\\install",
+      "cmakeCommandArgs": "-DENABLE_UNIT_TEST=ON",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": ""
+    }
+  ]
+}

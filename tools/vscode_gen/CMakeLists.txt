@@ -14,9 +14,14 @@ set(LAUNCH_EXECUTABLE_FILE "${PROJECT_SOURCE_DIR}/build/app/firmware.elf")
 set(LAUNCH_STM_CONFIG_FILE "${TARGET_CFG_DIR}/stm32f4x.cfg") # https://sourceforge.net/p/openocd/code/ci/master/tree/tcl/target/
 set(LAUNCH_IFC_CONFIG_FILE "${INTERFACE_CFG_DIR}/stlink.cfg") # https://sourceforge.net/p/openocd/code/ci/master/tree/tcl/interface/
 set(LAUNCH_SYSTEM_VIEW_DESCRIPTION_FILE "${SYSTEM_VIEW_DESCRIPTION_DIR}/STM32F411.svd")
-configure_file("${LAUNCH_FILE}.in" "${VS_CODE_DIR}/${LAUNCH_FILE}" ESCAPE_QUOTES)
+configure_file("${LAUNCH_FILE}.in" "${VS_CODE_DIR}/${LAUNCH_FILE}" @ONLY ESCAPE_QUOTES)
 
 # Generate c_cpp_properties.json
 set(C_CPP_PROPERTIES_DEVICE "STM32F4")
 set(C_CPP_PROPERTIES_ARCH "__ARM_ARCH_7EM__")
-configure_file("${C_CPP_PROPERTIES_FILE}.in" "${VS_CODE_DIR}/${C_CPP_PROPERTIES_FILE}" ESCAPE_QUOTES)
+
+if(ENABLE_UNIT_TEST)
+    set(C_CPP_PROPERTIES_UNIT_TEST "UNIT_TEST")
+endif()
+
+configure_file("${C_CPP_PROPERTIES_FILE}.in" "${VS_CODE_DIR}/${C_CPP_PROPERTIES_FILE}" @ONLY ESCAPE_QUOTES)

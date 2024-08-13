@@ -45,13 +45,20 @@ CMAKE_DEFINITIONS ?= \
 	$(BUILD_TYPE_DEF_CMAKE)\
 	$(USE_PRECOMP_DEF_CMAKE)\
 	$(STORE_PRECOMP_DEF_CMAKE)\
-	$(TOOLCHAIN_DEF_CMAKE)
+	$(TOOLCHAIN_DEF_CMAKE)\
+	# end of line
+
+CMAKE_DEFINITIONS_UNIT_TESTING ?= \
+	$(BUILD_TYPE_DEF_CMAKE)\
+	-DENABLE_UNIT_TEST=ON\
+	-DCMAKE_C_COMPILER="gcc.exe"\
+	-DCMAKE_CXX_COMPILER="gcc.exe"\
 	# end of line
 
 #-----------------------------------------------------------------------------+
 # Targets                                                                     |
 #-----------------------------------------------------------------------------+
-.PHONY: remove remove_all generate compile target clean help
+.PHONY: remove remove_all generate compile target clean ut_generate ut_run help
 default: help
 
 # >----------------------------------------------------------------------------
@@ -102,6 +109,19 @@ clean:
 	@echo "Clean up finished."
 
 # >----------------------------------------------------------------------------
+ut_generate:
+	@echo "Generating CMake files for unit testing..."
+	@cmake -S . -B build/ut/ -G Ninja $(CMAKE_DEFINITIONS_UNIT_TESTING)
+
+# >----------------------------------------------------------------------------
+ut_compile: ut_generate
+	@cmake --build build/ut/ --
+
+# >----------------------------------------------------------------------------
+ut_run: ut_compile
+	@cmake --build build/ut/ -t test --
+
+# >----------------------------------------------------------------------------
 help:
 	@echo "Available targets:"
 	@echo "  remove                    Remove all files in the build folder"
@@ -110,4 +130,6 @@ help:
 	@echo "  compile                   Compile the project"
 	@echo "  clean                     Clean up build artifacts"
 	@echo "  target t=<your_target>    Execute a specified target"
+	@echo "  ut_generate               Generate the build system for unit tests."
+	@echo "  ut_run                    Run unit tests."
 	@echo "  help                      Show this help message"

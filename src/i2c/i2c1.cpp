@@ -3,7 +3,7 @@
 extern "C"
 {
 #include "libopencm3/stm32/rcc.h"
-#include <libopencm3/stm32/gpio.h>
+#include "libopencm3/stm32/gpio.h"
 }
 
 // TODO: GPIO port and pins as parameter
@@ -20,10 +20,10 @@ void cI2C1::Setup(void)
 
   // Set I2C1
   rcc_periph_clock_enable(RCC_I2C1);
-  
+
   i2c_peripheral_disable(I2C1);
   i2c_set_speed(I2C1, i2c_speed_sm_100k, rcc_apb1_frequency / 1e6);
-  
+
   i2c_peripheral_enable(I2C1);
 }
 

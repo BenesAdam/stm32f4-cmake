@@ -28,25 +28,32 @@ endif()
 # Build libopencm3 .a file
 #==============================================================================
 set(LIBOPENCM3_LIBRARY ${LIBOPENCM3_SOURCE_DIR}/lib/libopencm3_stm32f4.a)
-set(LIBOPENCM3_MAKE_DATABASE ${CMAKE_CURRENT_BINARY_DIR}/libopencm3_make_database.txt)
+set(LIBOPENCM3_MAKE_DATABASE_FILE "libopencm3_make_database.txt")
+set(LIBOPENCM3_MAKE_DATABASE "${CMAKE_CURRENT_BINARY_DIR}/${LIBOPENCM3_MAKE_DATABASE_FILE}")
+file(RELATIVE_PATH BINARY_RELATIVE_DIR "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}")
+
 
 # --- Precompilation settings
 set(PRECOMPILED_DIR "${PROJECT_SOURCE_DIR}/precompiled/stm32f4")
-set(PRECOMPILED_FILES 
+set(PRECOMPILED_FILES
     "${LIBOPENCM3_RELATIVE_DIR}/lib/stm32/f4/vector_nvic.c"
     "${LIBOPENCM3_RELATIVE_DIR}/include/libopencmsis/stm32/f4/irqhandlers.h"
     "${LIBOPENCM3_RELATIVE_DIR}/include/libopencm3/stm32/f4/nvic.h"
     "${LIBOPENCM3_RELATIVE_DIR}/lib/libopencm3_stm32f4.a"
-    "build/libopencm3_make_database.txt"
 )
 
 # --- Load precompilated files
 if(ENABLE_LIBOPENCM3_USE_PRECOMPILED)
     message(STATUS "Precompiled libopencm3 files used:")
+    # Files from list
     foreach(PRECOMPILED_FILE ${PRECOMPILED_FILES})
         message(STATUS "  * ${PRECOMPILED_FILE}")
         configure_file("${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" "${PROJECT_SOURCE_DIR}/${PRECOMPILED_FILE}" COPYONLY)
     endforeach()
+
+    # Libopencm3 make database
+    message(STATUS "  * ${LIBOPENCM3_MAKE_DATABASE_FILE}")
+    configure_file("${PRECOMPILED_DIR}/${LIBOPENCM3_MAKE_DATABASE_FILE}" ${LIBOPENCM3_MAKE_DATABASE} COPYONLY)
 endif()
 
 # --- Build libopencm3
@@ -92,11 +99,16 @@ endif()
 # --- Store precompilated files
 if(ENABLE_LIBOPENCM3_STORE_PRECOMPILED)
     message(STATUS "Precompiled libopencm3 files stored:")
+    # Files from list
     file(REMOVE_RECURSE ${PRECOMPILED_DIR})
     foreach(PRECOMPILED_FILE ${PRECOMPILED_FILES})
         message(STATUS "  * ${PRECOMPILED_FILE}")
         configure_file("${PROJECT_SOURCE_DIR}/${PRECOMPILED_FILE}" "${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" COPYONLY)
     endforeach()
+
+    # Libopencm3 make database
+    message(STATUS "  * ${LIBOPENCM3_MAKE_DATABASE_FILE}")
+    configure_file(${LIBOPENCM3_MAKE_DATABASE} "${PRECOMPILED_DIR}/${LIBOPENCM3_MAKE_DATABASE_FILE}" COPYONLY)
 endif()
 
 #==============================================================================
@@ -105,40 +117,42 @@ endif()
 # --- Find current dir of libopencm3 target
 set(LIBOPENCM3_TARGET_OUT_DIR ${LIBOPENCM3_SOURCE_DIR}/lib/stm32/f4/)
 
-if(EXISTS ${LIBOPENCM3_MAKE_DATABASE})
-    # --- Find all object files
-    file(STRINGS ${LIBOPENCM3_MAKE_DATABASE} LIBOPENCM3_OBJECT_FILES REGEX "OBJS = (.*)")
-    string(REPLACE "OBJS = " "" LIBOPENCM3_OBJECT_FILES ${LIBOPENCM3_OBJECT_FILES})
-    string(REPLACE " " ";" LIBOPENCM3_OBJECT_FILES ${LIBOPENCM3_OBJECT_FILES})
-
-    # --- Find dependencies for all object files
-    set(LIBOPENCM3_SOURCES)
-    foreach(OBJECT_FILE IN LISTS LIBOPENCM3_OBJECT_FILES)
-        file(STRINGS ${LIBOPENCM3_MAKE_DATABASE} OBJECT_FILE_DEPS REGEX "${OBJECT_FILE}:(.*)")
-        string(REGEX MATCHALL "[^ ]+\\.c" OBJECT_FILE_DEPS ${OBJECT_FILE_DEPS})
-        list(APPEND LIBOPENCM3_SOURCES ${OBJECT_FILE_DEPS})
-    endforeach()
-
-    # --- Transform to absolute paths
-    list(REMOVE_DUPLICATES LIBOPENCM3_SOURCES)
-    list(TRANSFORM LIBOPENCM3_SOURCES PREPEND ${LIBOPENCM3_TARGET_OUT_DIR})
-
-    foreach(SOURCE_FILE ${LIBOPENCM3_SOURCES})
-        get_filename_component(SOURCE_FILE_PATH_NORMALIZED "${SOURCE_FILE}" REALPATH)
-        set(ABSOLUTE_LIBOPENCM3_SOURCES ${ABSOLUTE_LIBOPENCM3_SOURCES} "${SOURCE_FILE_PATH_NORMALIZED}")
-    endforeach()
-
-    # --- Remove unused files
-    file(GLOB_RECURSE LIBOPENCM3_UNUSED_SOURCE_FILES "${LIBOPENCM3_SOURCE_DIR}/*.c")
-
-    foreach(used_file ${ABSOLUTE_LIBOPENCM3_SOURCES})
-        list(FILTER LIBOPENCM3_UNUSED_SOURCE_FILES EXCLUDE REGEX "${used_file}$")
-    endforeach()
-
-    foreach(LIBOPENCM3_UNUSED_SOURCE_FILE ${LIBOPENCM3_UNUSED_SOURCE_FILES})
-        # file(REMOVE "${LIBOPENCM3_UNUSED_SOURCE_FILE}")
-    endforeach()
+if(NOT EXISTS ${LIBOPENCM3_MAKE_DATABASE})
+    message(FATAL_ERROR "Libopencm3 make database not exists. (${LIBOPENCM3_MAKE_DATABASE})")
 endif()
+
+# --- Find all object files
+file(STRINGS ${LIBOPENCM3_MAKE_DATABASE} LIBOPENCM3_OBJECT_FILES REGEX "OBJS = (.*)")
+string(REPLACE "OBJS = " "" LIBOPENCM3_OBJECT_FILES ${LIBOPENCM3_OBJECT_FILES})
+string(REPLACE " " ";" LIBOPENCM3_OBJECT_FILES ${LIBOPENCM3_OBJECT_FILES})
+
+# --- Find dependencies for all object files
+set(LIBOPENCM3_SOURCES)
+foreach(OBJECT_FILE IN LISTS LIBOPENCM3_OBJECT_FILES)
+    file(STRINGS ${LIBOPENCM3_MAKE_DATABASE} OBJECT_FILE_DEPS REGEX "${OBJECT_FILE}:(.*)")
+    string(REGEX MATCHALL "[^ ]+\\.c" OBJECT_FILE_DEPS ${OBJECT_FILE_DEPS})
+    list(APPEND LIBOPENCM3_SOURCES ${OBJECT_FILE_DEPS})
+endforeach()
+
+# --- Transform to absolute paths
+list(REMOVE_DUPLICATES LIBOPENCM3_SOURCES)
+list(TRANSFORM LIBOPENCM3_SOURCES PREPEND ${LIBOPENCM3_TARGET_OUT_DIR})
+
+foreach(SOURCE_FILE ${LIBOPENCM3_SOURCES})
+    get_filename_component(SOURCE_FILE_PATH_NORMALIZED "${SOURCE_FILE}" REALPATH)
+    set(ABSOLUTE_LIBOPENCM3_SOURCES ${ABSOLUTE_LIBOPENCM3_SOURCES} "${SOURCE_FILE_PATH_NORMALIZED}")
+endforeach()
+
+# --- Remove unused files
+file(GLOB_RECURSE LIBOPENCM3_UNUSED_SOURCE_FILES "${LIBOPENCM3_SOURCE_DIR}/*.c")
+
+foreach(used_file ${ABSOLUTE_LIBOPENCM3_SOURCES})
+    list(FILTER LIBOPENCM3_UNUSED_SOURCE_FILES EXCLUDE REGEX "${used_file}$")
+endforeach()
+
+foreach(LIBOPENCM3_UNUSED_SOURCE_FILE ${LIBOPENCM3_UNUSED_SOURCE_FILES})
+    # file(REMOVE "${LIBOPENCM3_UNUSED_SOURCE_FILE}")
+endforeach()
 
 #==============================================================================
 # Integrate libopencm3 into cmake
@@ -162,7 +176,7 @@ set(COMPILE_OPTIONS
 )
 
 # TODO: better way how to say where map file will be located?
-set(MAP_FILE ${CMAKE_BINARY_DIR}/app/${CMAKE_PROJECT_NAME}.map)
+set(MAP_FILE ${CMAKE_BINARY_DIR}/app/firmware.map)
 set(LINKER_OPTIONS
     ${COMPILE_OPTIONS}
     -Wl,-Map=${MAP_FILE}
