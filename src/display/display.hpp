@@ -56,7 +56,7 @@ class cDisplay
 {
 public:
   cDisplay(void);
-  void Init(const uint8_t arg_i2c_address);
+  void Init(const ui8 arg_i2c_address);
   void Clear(void);
 
   // Print character(s)
@@ -65,7 +65,7 @@ public:
   void Print(const wchar_t* arg_string, const uint64_t arg_pauseInMs = 0U);
 
   // Cursor
-  void SetCursor(const uint8_t arg_row, const uint8_t arg_column);
+  void SetCursor(const ui8 arg_row, const ui8 arg_column);
   void Home(void);
   void NewLine(void);
 
@@ -74,21 +74,21 @@ public:
   void TurnBacklightOff(void);
 
   // Dimensions
-  uint8_t Height(void) const;
-  uint8_t Width(void) const;
-  uint8_t CharacterHeight(void) const;
-  uint8_t CharacterWidth(void) const;
+  ui8 Height(void) const;
+  ui8 Width(void) const;
+  ui8 CharacterHeight(void) const;
+  ui8 CharacterWidth(void) const;
 
   // Custom Symbol
-  void SetCustomSymbol(const eDisplayCharacter arg_character, const uint8_t arg_matrix[]);
+  void SetCustomSymbol(const eDisplayCharacter arg_character, const ui8 arg_matrix[]);
 
 private:
-  void WriteByte(const uint8_t arg_data, const uint8_t arg_mode);
-  void WriteNibble(const uint8_t arg_byte);
-  void WriteExpander(const uint8_t arg_byte);
+  void WriteByte(const ui8 arg_data, const ui8 arg_mode);
+  void WriteNibble(const ui8 arg_byte);
+  void WriteExpander(const ui8 arg_byte);
 
-  uint8_t address;
-  uint8_t backlight;
+  ui8 address;
+  ui8 backlight;
 };
 
 #endif /* DISPLAY_HPP */

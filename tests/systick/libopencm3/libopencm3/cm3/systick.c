@@ -1,6 +1,6 @@
 #include "systick.h"
 
-bool systick_set_frequency(uint32_t freq, uint32_t ahb)
+bool systick_set_frequency(ui32 freq, ui32 ahb)
 {
   return true;
 }

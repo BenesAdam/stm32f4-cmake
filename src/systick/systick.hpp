@@ -6,7 +6,7 @@
 class cSysTick
 {
 public:
-  static const uint32_t Frequency = 1000000U; // 1MHz
+  static const ui32 Frequency = 1000000U; // 1MHz
   static void Setup(void);
   static uint64_t Millis(void);
   static uint64_t Micros(void);
