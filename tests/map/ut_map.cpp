@@ -5,12 +5,12 @@
 
 void Test_cConstSizeAllocator(void)
 {
-  cConstSizeAllocator<uint16_t, 3U> allocator;
+  cConstSizeAllocator<ui16, 3U> allocator;
 
-  uint16_t* x1 = nullptr;
-  uint16_t* x2 = nullptr;
-  uint16_t* x3 = nullptr;
-  uint16_t* x4 = nullptr;
+  ui16* x1 = nullptr;
+  ui16* x2 = nullptr;
+  ui16* x3 = nullptr;
+  ui16* x4 = nullptr;
 
   allocator.Allocate(x1);
   TEST_ASSERT((uintptr_t)(x1) == (uintptr_t)(&allocator));
@@ -48,9 +48,9 @@ void Test_cConstSizeAllocator(void)
 
 void Test_cRedBlackTree(void)
 {
-  uint32_t value = 0U;
+  ui32 value = 0U;
   bool founded = false;
-  nsRedBlackTree::cRedBlackTree<uint16_t, uint32_t, 20U> tree;
+  nsRedBlackTree::cRedBlackTree<ui16, ui32, 20U> tree;
 
   // Build training tree
   tree.Insert(4);

@@ -5,19 +5,19 @@ rcc_clock_scale rcc_hsi_configs[1] =
   {0U}
 };
 
-void rcc_periph_clock_enable(uint32_t clken)
+void rcc_periph_clock_enable(ui32 clken)
 {
 }
 
-void gpio_mode_setup(uint32_t gpioport, uint8_t mode, uint8_t pull_up_down, uint16_t gpios)
+void gpio_mode_setup(ui32 gpioport, ui8 mode, ui8 pull_up_down, ui16 gpios)
 {
 }
 
-void gpio_set_output_options(uint32_t gpioport, uint8_t otype, uint8_t speed, uint16_t gpios)
+void gpio_set_output_options(ui32 gpioport, ui8 otype, ui8 speed, ui16 gpios)
 {
 }
 
-void gpio_set_af(uint32_t gpioport, uint8_t alt_func_num, uint16_t gpios)
+void gpio_set_af(ui32 gpioport, ui8 alt_func_num, ui16 gpios)
 {
 }
 

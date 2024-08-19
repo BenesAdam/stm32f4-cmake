@@ -23,7 +23,7 @@ cDisplay display;
 
 void AddBatterySymbol(void)
 {
-  const uint8_t batteryBitMap[] = 
+  const ui8 batteryBitMap[] = 
   {
     0b01110,
     0b11011,
@@ -43,9 +43,9 @@ void PrintDisplayDemo(void)
   display.TurnBacklightOff();
   display.Clear();
 
-  for (uint8_t i = 0U; i < display.Height(); i++)
+  for (ui8 i = 0U; i < display.Height(); i++)
   {
-    for (uint8_t j = 0U; j < display.Width(); j++)
+    for (ui8 j = 0U; j < display.Width(); j++)
     {
       const eDisplayCharacter character = (((j + i) % 2) == 0) ? BATTERY : eDisplayCharacter::BLANK;
       display.Print(character);

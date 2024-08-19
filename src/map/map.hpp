@@ -47,7 +47,7 @@ namespace nsRedBlackTree
     }
   };
 
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   class cRedBlackTree
   {
   public:
@@ -73,7 +73,7 @@ namespace nsRedBlackTree
   //! Constructor.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline cRedBlackTree<tKey, tValue, MaxSize>::cRedBlackTree(void) : root(nullptr)
   {
   }
@@ -83,7 +83,7 @@ namespace nsRedBlackTree
   //! Constructor with initializer list.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline cRedBlackTree<tKey, tValue, MaxSize>::cRedBlackTree(const std::initializer_list<sTuple<tKey, tValue>> arg_initializerList) : cRedBlackTree<tKey, tValue, MaxSize>::cRedBlackTree()
   {
     for (const sTuple<tKey, tValue> &tuple : arg_initializerList)
@@ -97,7 +97,7 @@ namespace nsRedBlackTree
   //! Returns new allocated node.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline sNode<tKey, tValue> *cRedBlackTree<tKey, tValue, MaxSize>::AllocateNewNode(const tKey arg_key, const tValue arg_value)
   {
     sNode<tKey, tValue> *result = nullptr;
@@ -121,7 +121,7 @@ namespace nsRedBlackTree
   //! Insert.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline bool cRedBlackTree<tKey, tValue, MaxSize>::Insert(const tKey arg_key, const tValue arg_value)
   {
     // Handle empty root
@@ -185,7 +185,7 @@ namespace nsRedBlackTree
   //! Remove two consecutive red edges.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline void cRedBlackTree<tKey, tValue, MaxSize>::RemoveConsecutiveRedEdges(sNode<tKey, tValue> *arg_node)
   {
     sNode<tKey, tValue> *parent = arg_node->parent;
@@ -258,7 +258,7 @@ namespace nsRedBlackTree
     }
   }
 
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline void cRedBlackTree<tKey, tValue, MaxSize>::MoveUp(sNode<tKey, tValue> *arg_node)
   {
     sNode<tKey, tValue> *parent = arg_node->parent;
@@ -326,7 +326,7 @@ namespace nsRedBlackTree
   //! Delete.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline bool cRedBlackTree<tKey, tValue, MaxSize>::Delete(const tKey arg_key)
   {
     return false;
@@ -337,7 +337,7 @@ namespace nsRedBlackTree
   //! Search.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline bool cRedBlackTree<tKey, tValue, MaxSize>::Search(const tKey arg_key, tValue &arg_value) const
   {
     sNode<tKey, tValue> *node = root;
@@ -371,7 +371,7 @@ namespace nsRedBlackTree
   //! Clean.
   //
   //***************************************************************************
-  template <typename tKey, typename tValue, uint32_t MaxSize>
+  template <typename tKey, typename tValue, ui32 MaxSize>
   inline void cRedBlackTree<tKey, tValue, MaxSize>::Clean(void)
   {
     this->allocator.Clean();

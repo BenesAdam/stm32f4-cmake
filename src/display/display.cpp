@@ -6,7 +6,7 @@ cDisplay::cDisplay(void) : address(0U), backlight(LCD_BIT_NO_BL)
 {
 }
 
-void cDisplay::Init(const uint8_t arg_i2c_address)
+void cDisplay::Init(const ui8 arg_i2c_address)
 {
   address = arg_i2c_address;
 
@@ -51,7 +51,7 @@ void cDisplay::Clear(void)
 
 void cDisplay::Print(const eDisplayCharacter arg_character)
 {
-  WriteByte(static_cast<uint8_t>(arg_character), LCD_BIT_RS);
+  WriteByte(static_cast<ui8>(arg_character), LCD_BIT_RS);
 }
 
 void cDisplay::Print(const wchar_t arg_character)
@@ -68,7 +68,7 @@ void cDisplay::Print(const wchar_t arg_character)
 
 void cDisplay::Print(const wchar_t *arg_string, const uint64_t arg_pauseInMs)
 {
-  uint32_t i = 0U;
+  ui32 i = 0U;
   while (arg_string[i] != L'\0')
   {
     if (arg_pauseInMs != 0U)
@@ -83,14 +83,14 @@ void cDisplay::Print(const wchar_t *arg_string, const uint64_t arg_pauseInMs)
   }
 }
 
-void cDisplay::SetCursor(const uint8_t arg_row, const uint8_t arg_column)
+void cDisplay::SetCursor(const ui8 arg_row, const ui8 arg_column)
 {
   if ((arg_row >= Height()) || (arg_column >= Width()))
   {
     return;
   }
 
-  uint8_t code = ((arg_row == 0U) ? 0x0U : 0x40U) + arg_column;
+  ui8 code = ((arg_row == 0U) ? 0x0U : 0x40U) + arg_column;
   WriteByte(LCD_INST_SET_DD_RAM | code, 0U);
 }
 
@@ -116,27 +116,27 @@ void cDisplay::TurnBacklightOff(void)
   WriteExpander(0U);
 }
 
-uint8_t cDisplay::Height(void) const
+ui8 cDisplay::Height(void) const
 {
   return 2U;
 }
 
-uint8_t cDisplay::Width(void) const
+ui8 cDisplay::Width(void) const
 {
   return 16U;
 }
 
-uint8_t cDisplay::CharacterHeight(void) const
+ui8 cDisplay::CharacterHeight(void) const
 {
   return 8U;
 }
 
-uint8_t cDisplay::CharacterWidth(void) const
+ui8 cDisplay::CharacterWidth(void) const
 {
   return 5U;
 }
 
-void cDisplay::SetCustomSymbol(const eDisplayCharacter arg_character, const uint8_t arg_matrix[])
+void cDisplay::SetCustomSymbol(const eDisplayCharacter arg_character, const ui8 arg_matrix[])
 {
   // Check display character
   if (arg_character > eDisplayCharacter::CUSTOM_8)
@@ -145,25 +145,25 @@ void cDisplay::SetCustomSymbol(const eDisplayCharacter arg_character, const uint
   }
 
   // Set Character Generator RAM address
-  const uint8_t address = (static_cast<uint8_t>(arg_character) & 0b111U) << 3U;
+  const ui8 address = (static_cast<ui8>(arg_character) & 0b111U) << 3U;
   WriteByte(LCD_INST_SET_CG_RAM | address, 0U);
 
   // Fill CG RAM row by row
-  for (uint8_t i = 0U; i < CharacterHeight(); i++)
+  for (ui8 i = 0U; i < CharacterHeight(); i++)
   {
-    const uint8_t mask = (1U << CharacterWidth()) - 1U;
+    const ui8 mask = (1U << CharacterWidth()) - 1U;
     WriteByte(arg_matrix[i] & mask, LCD_BIT_RS);
   }
 }
 
-void cDisplay::WriteByte(const uint8_t arg_data, const uint8_t arg_mode)
+void cDisplay::WriteByte(const ui8 arg_data, const ui8 arg_mode)
 {
   WriteNibble((arg_data & 0xF0) | arg_mode);
   WriteNibble((arg_data << 4U) | arg_mode);
   cSysTick::DelayUs(40U);
 }
 
-void cDisplay::WriteNibble(const uint8_t arg_byte)
+void cDisplay::WriteNibble(const ui8 arg_byte)
 {
   WriteExpander(arg_byte | LCD_BIT_E);
   cSysTick::DelayUs(1U);
@@ -171,7 +171,7 @@ void cDisplay::WriteNibble(const uint8_t arg_byte)
   cSysTick::DelayUs(50U);
 }
 
-void cDisplay::WriteExpander(const uint8_t arg_byte)
+void cDisplay::WriteExpander(const ui8 arg_byte)
 {
   cI2C1::WriteByte(address, arg_byte | backlight);
 }
