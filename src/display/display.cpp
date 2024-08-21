@@ -66,7 +66,7 @@ void cDisplay::Print(const wchar_t arg_character)
   }
 }
 
-void cDisplay::Print(const wchar_t *arg_string, const uint64_t arg_pauseInMs)
+void cDisplay::Print(const wchar_t *arg_string, const ui64 arg_pauseInMs)
 {
   ui32 i = 0U;
   while (arg_string[i] != L'\0')
@@ -81,6 +81,34 @@ void cDisplay::Print(const wchar_t *arg_string, const uint64_t arg_pauseInMs)
 
     i++;
   }
+}
+
+void cDisplay::Print(const ui32 arg_number, const ui64 arg_pauseInMs)
+{
+  const ui16 maxSize = 11U; // ui32 -> 10 digits + 1 terminator ('\0')
+  wchar_t str[maxSize];
+  str[maxSize - 1U] = L'\0';
+  
+  ui32 index = maxSize - 2U;
+  ui32 remainder = arg_number;
+
+  while(remainder > 0U)
+  {
+    str[index] = L'0' + (remainder % 10U);
+    remainder /= 10U;
+    index--;
+  }
+
+  if(arg_number != 0U)
+  {
+    index++;
+  }
+  else
+  {
+    str[index] = L'0';
+  }
+
+  Print(&str[index], arg_pauseInMs);
 }
 
 void cDisplay::SetCursor(const ui8 arg_row, const ui8 arg_column)

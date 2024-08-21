@@ -62,7 +62,8 @@ public:
   // Print character(s)
   void Print(const eDisplayCharacter arg_character);
   void Print(const wchar_t arg_character);
-  void Print(const wchar_t* arg_string, const uint64_t arg_pauseInMs = 0U);
+  void Print(const wchar_t* arg_string, const ui64 arg_pauseInMs = 0U);
+  void Print(const ui32 arg_number, const ui64 arg_pauseInMs = 0U);
 
   // Cursor
   void SetCursor(const ui8 arg_row, const ui8 arg_column);

@@ -17,26 +17,10 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * This is a generic linker script for Cortex-M targets using libopencm3.
- *
- * Memory regions MUST be defined in the ld script which includes this one!
- * Example:
-
 MEMORY
 {
-  rom (rx) : ORIGIN = 0x08000000, LENGTH = 256K
-  ram (rwx) : ORIGIN = 0x20000000, LENGTH = 16K
-}
-
-INCLUDE cortex-m-generic.ld
-
-*/
-
-MEMORY
-{
-  rom (rx) : ORIGIN = 0x08000000, LENGTH = 512K
-  ram (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
+  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K
+  RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
 /* Enforce emmition of the vector table. */
@@ -48,66 +32,66 @@ ENTRY(reset_handler)
 /* Define sections. */
 SECTIONS
 {
-  .text : {
+  .text (READONLY) : {
     *(.vectors)	/* Vector table */
     *(.text*)	/* Program code */
     . = ALIGN(4);
     *(.rodata*)	/* Read-only data */
     . = ALIGN(4);
-  } >rom
+  } > FLASH
 
   /* C++ Static constructors/destructors, also used for __attribute__
    * ((constructor)) and the likes */
-  .preinit_array : {
+  .preinit_array (READONLY) : {
     . = ALIGN(4);
     __preinit_array_start = .;
     KEEP (*(.preinit_array))
     __preinit_array_end = .;
-  } >rom
-  .init_array : {
+  } > FLASH
+  .init_array (READONLY) : {
     . = ALIGN(4);
     __init_array_start = .;
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array))
     __init_array_end = .;
-  } >rom
-  .fini_array : {
+  } > FLASH
+  .fini_array (READONLY) : {
     . = ALIGN(4);
     __fini_array_start = .;
     KEEP (*(.fini_array))
     KEEP (*(SORT(.fini_array.*)))
     __fini_array_end = .;
-  } >rom
+  } > FLASH
 
   /*
    * Another section used by C++ stuff, appears when using newlib with
    * 64bit (long long) printf support
    */
-  .ARM.extab : {
+  .ARM.extab (READONLY) : {
     *(.ARM.extab*)
-  } >rom
-  .ARM.exidx : {
+  } > FLASH
+  .ARM.exidx (READONLY) : {
     __exidx_start = .;
     *(.ARM.exidx*)
     __exidx_end = .;
-  } >rom
+  } > FLASH
 
   . = ALIGN(4);
   _etext = .;
 
-  /* ram, but not cleared on reset, eg boot/app comms */
+  /* RAM, but not cleared on reset, eg boot/app comms */
   .noinit (NOLOAD) : {
     *(.noinit*)
-  } >ram
+  } > RAM
   . = ALIGN(4);
 
   .data : {
     _data = .;
     *(.data*)	/* Read-write initialized data */
-    *(.ramtext*)    /* "text" functions to run in ram */
+    *(.ramtext*)    /* "text" functions to run in RAM */
     . = ALIGN(4);
     _edata = .;
-  } >ram AT >rom
+  } > RAM AT > FLASH
   _data_loadaddr = LOADADDR(.data);
 
   .bss : {
@@ -115,7 +99,7 @@ SECTIONS
     *(COMMON)
     . = ALIGN(4);
     _ebss = .;
-  } >ram
+  } > RAM
 
   /*
    * The .eh_frame section appears to be used for C++ exception handling.
@@ -129,4 +113,4 @@ SECTIONS
   end = .;
 }
 
-PROVIDE(_stack = ORIGIN(ram) + LENGTH(ram));
+PROVIDE(_stack = ORIGIN(RAM) + LENGTH(RAM));

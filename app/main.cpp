@@ -1,6 +1,7 @@
 #include "systick.hpp"
 #include "i2c1.hpp"
 #include "display.hpp"
+#include "noinit_vars.hpp"
 
 extern "C"
 {
@@ -56,10 +57,11 @@ void PrintDisplayDemo(void)
   display.TurnBacklightOn();
 
   display.SetCursor(0U, 3U);
-  display.Print(L" Display ", 250);
-  display.SetCursor(1U, 4U);
-  display.Print(L" 1602A ", 250);
-  cSysTick::DelayMs(250);
+  display.Print(L" Resets: ", 20);
+  display.SetCursor(1U, 5U);
+
+  display.Print(nsNoinitVars::ResetCount, 20);
+  cSysTick::DelayMs(1000);
 
   display.TurnBacklightOff();
   cSysTick::DelayMs(250);
@@ -70,6 +72,8 @@ void PrintDisplayDemo(void)
 
 int main()
 {
+  nsNoinitVars::ResetCount++;
+  nsNoinitVars::InitializeOnColdStart();
   cSysTick::Setup();
   cI2C1::Setup();
 

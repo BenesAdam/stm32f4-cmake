@@ -7,7 +7,7 @@ extern "C"
 #include "libopencm3/cm3/nvic.h"
 }
 
-static volatile uint64_t system_time = 0U;
+static volatile ui64 system_time = 0U;
 
 extern "C" void sys_tick_handler(void)
 {
@@ -26,19 +26,19 @@ void cSysTick::Setup(void)
 }
 
 // Returns number of microseconds
-uint64_t cSysTick::Micros(void)
+ui64 cSysTick::Micros(void)
 {
   return system_time;
 }
 
-uint64_t cSysTick::Millis(void)
+ui64 cSysTick::Millis(void)
 {
   return cSysTick::Micros() / 1000ULL;
 }
 
-void cSysTick::DelayMs(uint64_t milliseconds)
+void cSysTick::DelayMs(ui64 milliseconds)
 {
-  const uint64_t endTimeInMicros = cSysTick::Micros() + (milliseconds * 1000ULL);
+  const ui64 endTimeInMicros = cSysTick::Micros() + (milliseconds * 1000ULL);
 #ifndef UNIT_TEST
   while (cSysTick::Micros() <= endTimeInMicros)
   {
@@ -46,9 +46,9 @@ void cSysTick::DelayMs(uint64_t milliseconds)
 #endif
 }
 
-void cSysTick::DelayUs(uint64_t microseconds)
+void cSysTick::DelayUs(ui64 microseconds)
 {
-  const uint64_t endTimeInMicros = cSysTick::Micros() + microseconds;
+  const ui64 endTimeInMicros = cSysTick::Micros() + microseconds;
 #ifndef UNIT_TEST
   while (cSysTick::Micros() <= endTimeInMicros)
   {

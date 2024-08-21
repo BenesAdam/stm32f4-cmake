@@ -164,24 +164,5 @@ set_property(TARGET libopencm3 PROPERTY IMPORTED_LOCATION ${LIBOPENCM3_LIBRARY})
 target_link_directories(libopencm3 INTERFACE ${LIBOPENCM3_SOURCE_DIR}/lib)
 target_compile_definitions(libopencm3 INTERFACE -DSTM32F4)
 
-set(COMPILE_OPTIONS
-    --static
-    -nostartfiles
-    -fno-common
-    -mcpu=cortex-m4
-    -mthumb
-    -mfpu=fpv4-sp-d16
-    -mfloat-abi=hard
-    -mabi=aapcs
-)
-
-# TODO: better way how to say where map file will be located?
-set(MAP_FILE ${CMAKE_BINARY_DIR}/app/firmware.map)
-set(LINKER_OPTIONS
-    ${COMPILE_OPTIONS}
-    -Wl,-Map=${MAP_FILE}
-    -Wl,--cref
-)
-
-target_compile_options(libopencm3 INTERFACE ${COMPILE_OPTIONS})
-target_link_options(libopencm3 INTERFACE ${LINKER_OPTIONS})
+include(AddCompileLinkOptions)
+add_compile_link_options(libopencm3 INTERFACE)

@@ -31,8 +31,3 @@ set(CMAKE_EXECUTABLE_SUFFIX_ASM .elf)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-
-function(stm32_add_linker_script TARGET VISIBILITY SCRIPT)
-    get_filename_component(SCRIPT "${SCRIPT}" ABSOLUTE)
-    target_link_options(${TARGET} ${VISIBILITY} -T "${SCRIPT}")
-endfunction()
