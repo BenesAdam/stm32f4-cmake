@@ -2,6 +2,7 @@
 #include "i2c1.hpp"
 #include "display.hpp"
 #include "noinit_vars.hpp"
+#include "errorhandler_inst.hpp"
 
 extern "C"
 {
@@ -77,15 +78,16 @@ int main()
   cSysTick::Setup();
   cI2C1::Setup();
 
-  display.Init(0x27);
-  AddBatterySymbol();
-  display.Clear();
+  //display.Init(0x27);
+  //AddBatterySymbol();
+  //display.Clear();
 
   rcc_periph_clock_enable(RCC_LED_PORT);
   gpio_mode_setup(LED_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED_PIN);
 
   while (true)
   {
-    PrintDisplayDemo();
+    //PrintDisplayDemo();
+    ErrorHandler.Cyclic();    
   }
 }

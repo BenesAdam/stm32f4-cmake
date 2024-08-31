@@ -8,6 +8,7 @@ target_link_libraries(firmware
     map
     noinit_vars
     systick
+    errorhandler
 )
 
 set(LINKER_SCRIPT_FILE ${PROJECT_SOURCE_DIR}/linker/STM32F411xE.ld)
