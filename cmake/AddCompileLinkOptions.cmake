@@ -8,6 +8,7 @@ function(add_compile_link_options target visibility)
         -mfpu=fpv4-sp-d16
         -mfloat-abi=hard
         -mabi=aapcs
+        --specs=nano.specs
     )
 
     set(LINKER_OPTIONS

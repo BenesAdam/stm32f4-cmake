@@ -12,7 +12,7 @@ find_package(Git REQUIRED)
 make_directory(${LIBOPENCM3_SOURCE_DIR})
 
 # Clone repository
-if(NOT EXISTS ${LIBOPENCM3_SOURCE_DIR}/.git)
+if(NOT EXISTS ${LIBOPENCM3_SOURCE_DIR}/Makefile)
     execute_process(
         COMMAND git clone --config core.autocrlf=false ${LIBOPENCM3_GIT_URL} ${LIBOPENCM3_RELATIVE_DIR}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -151,18 +151,31 @@ foreach(used_file ${ABSOLUTE_LIBOPENCM3_SOURCES})
 endforeach()
 
 foreach(LIBOPENCM3_UNUSED_SOURCE_FILE ${LIBOPENCM3_UNUSED_SOURCE_FILES})
-    # file(REMOVE "${LIBOPENCM3_UNUSED_SOURCE_FILE}")
+    file(REMOVE "${LIBOPENCM3_UNUSED_SOURCE_FILE}")
 endforeach()
+
+file(REMOVE_RECURSE ${LIBOPENCM3_SOURCE_DIR}/.git)
 
 #==============================================================================
 # Integrate libopencm3 into cmake
 #==============================================================================
-add_library(libopencm3 STATIC IMPORTED)
-
-set_property(TARGET libopencm3 PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${LIBOPENCM3_SOURCE_DIR}/include)
-set_property(TARGET libopencm3 PROPERTY IMPORTED_LOCATION ${LIBOPENCM3_LIBRARY})
-target_link_directories(libopencm3 INTERFACE ${LIBOPENCM3_SOURCE_DIR}/lib)
-target_compile_definitions(libopencm3 INTERFACE -DSTM32F4)
-
-include(AddCompileLinkOptions)
-add_compile_link_options(libopencm3 INTERFACE)
+if(${ENABLE_LIBOPENCM3_USE_STATIC})
+    # Pros: IntelliSense working.
+    # Cons: little bit slower build.
+    set(LIBOPENCM3_FILTERED_SOURCES ${ABSOLUTE_LIBOPENCM3_SOURCES})
+    list(FILTER LIBOPENCM3_FILTERED_SOURCES EXCLUDE REGEX "vector_nvic\\.c$")
+    add_library(libopencm3 STATIC ${LIBOPENCM3_FILTERED_SOURCES})
+    target_include_directories(libopencm3 PUBLIC ${LIBOPENCM3_SOURCE_DIR}/include)
+    target_compile_definitions(libopencm3 PUBLIC -DSTM32F4)
+    target_link_libraries(libopencm3 common)
+else()
+    # Pros: fast build.
+    # Cons: IntelliSense not working on libopencm3 source files.
+    add_library(libopencm3 STATIC IMPORTED)
+    set_property(TARGET libopencm3 PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${LIBOPENCM3_SOURCE_DIR}/include)
+    set_property(TARGET libopencm3 PROPERTY IMPORTED_LOCATION ${LIBOPENCM3_LIBRARY})
+    target_link_directories(libopencm3 INTERFACE ${LIBOPENCM3_SOURCE_DIR}/lib)
+    target_compile_definitions(libopencm3 INTERFACE -DSTM32F4)
+    include(AddCompileLinkOptions)
+    add_compile_link_options(libopencm3 INTERFACE)
+endif()

@@ -16,6 +16,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #   Options
 option(ENABLE_LIBOPENCM3_USE_PRECOMPILED "Whether to use precompiled libopencm3 (make sure you are on disk S:)" OFF)
 option(ENABLE_LIBOPENCM3_STORE_PRECOMPILED "Whether to store precompiled libopencm3 (make sure you are on disk S:)" OFF)
+option(ENABLE_LIBOPENCM3_USE_STATIC "Whether to use libopencm3 as STATIC library (own compilation in cmake) or IMPORTED library (.a file)." ON)
 
 option(ENABLE_UNIT_TEST "Whether to enable unit testing." OFF)
 
