@@ -14,23 +14,18 @@ This repository provides a CMake-based build system for STM32F4 microcontrollers
 
 ## Prerequisites
 
-### For All Platforms
-
 - **CMake**: Ensure CMake is installed. Download it from [CMake's official website](https://cmake.org/download/).
-- **libopencm3**: Install the `libopencm3` library and its dependencies. Follow the instructions at [libopencm3 GitHub page](https://github.com/libopencm3/libopencm3) to install:
-  - **GNU Make** (version 3.81 or later)
-  - **GCC** (GNU Compiler Collection)
-  - **GNU Binutils** (binutils for GCC)
-  - **GDB** (GNU Debugger)
-
-### Additional Requirements for Windows Users
-
-- **MSYS**: Install MSYS for a Unix-like environment and command-line tools on Windows. Download it from [MSYS 1.0.11](http://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.11/MSYS-1.0.11.exe).
-- **Python**: Install Python from [Python.org](https://www.python.org/downloads/windows/). Any recent version should be suitable.
 - **ARM Toolchain**: Install an ARM toolchain such as `arm-none-eabi` or `arm-elf`. For instance, you can get it from [GCC ARM Embedded](https://launchpad.net/gcc-arm-embedded).
-- **GNU Make for Windows**: Download and install GNU Make from [GnuWin32](http://gnuwin32.sourceforge.net/packages/make.htm) or [MSYS2](https://www.msys2.org/).
+- **GNU Make for Windows**: Download and install GNU Make from [GnuWin32](http://gnuwin32.sourceforge.net/packages/make.htm).
 - **Visual Studio Code (VSCode)**: Install VSCode from [Visual Studio Code](https://code.visualstudio.com/) for firmware development and debugging.
 - **Visual Studio**: Install Visual Studio from [Visual Studio](https://visualstudio.microsoft.com/) for running unit tests.
+- **Python**: Install Python from [Python.org](https://www.python.org/downloads/windows/). Any recent version should be suitable.
+
+### When not using precompiled files
+
+It is possible to build libopencm3 for any platform by yourself. Libopencm3 has makefiles for Linux platform - it is not possible to compile it directly on Windows. MSYS is needed with special settings.
+
+- **MSYS**: Install MSYS for a Unix-like environment and command-line tools on Windows. Download it from [MSYS 1.0.11](http://sourceforge.net/projects/mingw/files/MSYS/Base/msys-core/msys-1.0.11/MSYS-1.0.11.exe).
 
 ## Getting Started
 
@@ -41,7 +36,11 @@ To get started with this project, follow these steps:
 ```bash
 git clone https://github.com/BenesAdam/stm32f4-cmake.git
 cd stm32f4-cmake
+subst S: .
+cd S:
 ```
+
+Working on this project on substed drive **S** is recommended.
 
 ### Examples of makefile targets
 
@@ -107,6 +106,8 @@ Unit tests can be added to the project and run on Windows. Ensure you have CTest
 The project directory is organized as follows:
 
 ### Directories
+
+- **`.vs`**: Configuration for Visual Studio.
 
 - **`.vscode`**: Configuration files for Visual Studio Code, including `launch.json` and `c_cpp_properties.json`.
 

@@ -17,7 +17,11 @@ extern "C" void sys_tick_handler(void)
 void cSysTick::Setup(void)
 {
   // Configure general clock
+#ifdef STM32F4
   rcc_clock_setup_pll(&rcc_hsi_configs[RCC_CLOCK_3V3_96MHZ]);
+#else
+  rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
+#endif
 
   // Configure system timer
   systick_set_frequency(cSysTick::Frequency, rcc_ahb_frequency);

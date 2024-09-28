@@ -16,15 +16,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #   Options
 option(ENABLE_LIBOPENCM3_USE_PRECOMPILED "Whether to use precompiled libopencm3 (make sure you are on disk S:)" OFF)
 option(ENABLE_LIBOPENCM3_STORE_PRECOMPILED "Whether to store precompiled libopencm3 (make sure you are on disk S:)" OFF)
-option(ENABLE_LIBOPENCM3_USE_STATIC "Whether to use libopencm3 as STATIC library (own compilation in cmake) or IMPORTED library (.a file)." ON)
+option(ENABLE_LIBOPENCM3_USE_STATIC "Whether to use libopencm3 as STATIC library (ON = own compilation in cmake) or IMPORTED library ( OFF = .a file)." ON)
+option(ENABLE_LIBOPENCM3_REMOVE_UNUSED "Whether to remove unused folders and files after clone of repository." ON)
 
 option(ENABLE_UNIT_TEST "Whether to enable unit testing." OFF)
+option(ENABLE_PLATFORM_STM32F1 "Whether to use bluepill or blackpill. (default OFF = blackpill)" OFF)
 
 # Modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(Platform)
 include(CPM)
 include(ConfigSafeGuards)
 include(AddGitSubmodule)
+
 if(NOT ENABLE_UNIT_TEST)
     include(Libopencm3)
 endif()

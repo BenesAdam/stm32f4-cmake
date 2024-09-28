@@ -3,7 +3,7 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true
   },
-  "cortex-debug.variableUseNaturalFormat": false,
+  "cortex-debug.variableUseNaturalFormat": true,
   "cmake.buildDirectory": "${workspaceFolder}/build/ut",
   "cmake.deleteBuildDirOnCleanConfigure": true,
   "cmake.debugConfig": {
@@ -91,6 +91,7 @@
     "xmemory": "cpp",
     "xstring": "cpp",
     "xtr1common": "cpp",
-    "xutility": "cpp"
+    "xutility": "cpp",
+    "gpio.h": "c"
   }
 }

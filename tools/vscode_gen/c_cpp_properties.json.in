@@ -4,9 +4,7 @@
             "name": "stm32",
             "compileCommands": "@PROJECT_BINARY_DIR@/compile_commands.json",
             "defines": [
-                "@C_CPP_PROPERTIES_DEVICE@",
-                "@C_CPP_PROPERTIES_ARCH@",
-                "@C_CPP_PROPERTIES_UNIT_TEST@"
+@C_CPP_PROPERTIES_DEFINITIONS@
             ],
             "intelliSenseMode": "gcc-arm",
             "cStandard": "c17",
