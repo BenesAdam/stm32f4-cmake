@@ -146,14 +146,17 @@ void HandleResets(void)
     display.NewLine();
     display.Print(L"You are crazy...");
 
-    for (ui8 i = 0U; i < 3U; i++)
-    {
-      BlinkMorseCode();
-    }
+    BlinkMorseCode();
+    BlinkMorseCode();
+    display.Clear();
+    display.Print(L"Anyway...");
+    BlinkMorseCode();
   }
-
-  display.Print(L"Anyway...");
-  cSysTick::DelayMs(1000);
+  else
+  {
+    display.Print(L"Anyway...");
+    cSysTick::DelayMs(1000);
+  }
 
   display.Clear();
 }

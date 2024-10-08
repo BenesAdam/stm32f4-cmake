@@ -23,6 +23,11 @@ public:
   static ui8 WriteReadByte(const ui8 arg_address, const ui8 arg_data);
 
 private:
+  static void Transfer7(ui32 i2c, ui8 addr, const ui8 *w, size_t wn, ui8 *r, size_t rn);
+  static void Write7(ui32 i2c, ui8 addr, const ui8 *data, size_t n);
+  static void Read7(ui32 i2c, ui8 addr, ui8 *res, size_t n);
+
+  static const ui64 timeoutUs = 300ULL;
 };
 
 #endif /* I2C1_HPP */
