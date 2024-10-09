@@ -8,6 +8,7 @@ extern "C"
 #include "i2c1.hpp"
 #include "display.hpp"
 #include "noinit_vars.hpp"
+#include "errorhandler_inst.hpp"
 
 const ui64 MorseShortDelayTime = 150U; // milliseconds
 const ui64 MorseLongDelayTime = 3U * MorseShortDelayTime;
@@ -43,9 +44,10 @@ int main(void)
   HandleResets();
   AskQuestion();
 
-  while (1)
+  while (true)
   {
     ShowTimer();
+    ErrorHandler.Cyclic();
   }
 
   return 0;

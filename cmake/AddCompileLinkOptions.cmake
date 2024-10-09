@@ -18,6 +18,9 @@ function(add_compile_link_options target visibility)
         -nostartfiles
         -fno-common
         -mthumb
+        -mfpu=fpv4-sp-d16
+        -mfloat-abi=hard
+        -mabi=aapcs
         --specs=nano.specs
         ${PLATFORM_COMPILE_OPTIONS}
     )
