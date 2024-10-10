@@ -36,7 +36,7 @@ int main(void)
   nsNoinitVars::ResetCount++;
   nsNoinitVars::InitializeOnColdStart();
   cSysTick::Setup();
-  cI2C1::Setup();
+  i2c1.Setup();
   InitializeDisplay();
   InitializeLight();
 

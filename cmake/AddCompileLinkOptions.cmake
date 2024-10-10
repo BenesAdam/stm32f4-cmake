@@ -6,9 +6,8 @@ if(ENABLE_PLATFORM_STM32F1)
 else()
     set(PLATFORM_COMPILE_OPTIONS
         -mcpu=cortex-m4
-        -mfpu=fpv4-sp-d16
         -mfloat-abi=hard
-        -mabi=aapcs
+        -mfpu=fpv4-sp-d16
     )
 endif()
 
@@ -18,9 +17,6 @@ function(add_compile_link_options target visibility)
         -nostartfiles
         -fno-common
         -mthumb
-        -mfpu=fpv4-sp-d16
-        -mfloat-abi=hard
-        -mabi=aapcs
         --specs=nano.specs
         ${PLATFORM_COMPILE_OPTIONS}
     )
