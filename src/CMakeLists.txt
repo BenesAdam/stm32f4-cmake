@@ -1,6 +1,7 @@
 add_subdirectory(common)
 
 if(NOT ENABLE_UNIT_TEST)
+    add_subdirectory(bitset)
     add_subdirectory(systick)
     add_subdirectory(display)
     add_subdirectory(i2c)
