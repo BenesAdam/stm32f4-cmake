@@ -2,6 +2,7 @@
 #define I2C1_HPP
 
 #include "types.h"
+#include "bitset.hpp"
 
 extern "C"
 {
@@ -34,7 +35,7 @@ private:
   static const ui64 timeoutUs = 300ULL;
   static const ui8 last7BitAddress = 0x7FU;
 
-  bool addressIsReachable[last7BitAddress]; // TODO: implement bitset
+  cBitset<last7BitAddress + 1> addressIsReachable;
 };
 
 extern cI2C1 i2c1;

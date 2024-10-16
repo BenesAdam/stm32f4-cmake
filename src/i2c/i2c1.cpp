@@ -17,7 +17,7 @@ cI2C1 i2c1;
     return false;                                            \
   }
 
-cI2C1::cI2C1(void) : addressIsReachable{false}
+cI2C1::cI2C1(void) : addressIsReachable()
 {
 }
 

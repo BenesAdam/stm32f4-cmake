@@ -1,4 +1,4 @@
-add_library(map INTERFACE
+add_library(bitset INTERFACE
     bitset.hpp
 )
 

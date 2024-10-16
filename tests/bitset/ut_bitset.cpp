@@ -10,10 +10,12 @@ class cTestBitset
 {
 public:
   static void Test_GetRequiredDataSize(void);
+  static void Test_Operators(void);
 };
 
 TEST_LIST = {
     { "cTestBitset::Test_GetRequiredDataSize", cTestBitset::Test_GetRequiredDataSize },
+    { "cTestBitset::Test_Operators", cTestBitset::Test_Operators },
     { NULL, NULL }
 };
 
@@ -67,4 +69,34 @@ void cTestBitset::Test_GetRequiredDataSize(void)
   TEST_ASSERT((cBitset<ui8Values, ui64>::GetRequiredDataSize()) == 4U);
   TEST_ASSERT((cBitset<ui16Values, ui64>::GetRequiredDataSize()) == 1024U);
   TEST_ASSERT((cBitset<ui32Values, ui64>::GetRequiredDataSize()) == 67108864U);
+}
+
+void cTestBitset::Test_Operators(void)
+{
+  constexpr ui16 size = 256;
+  cBitset<size> bitset;
+
+  const ui64 alwaysSetBit = 13;
+  bitset.SetBit(alwaysSetBit);
+  TEST_CHECK(bitset[alwaysSetBit] == true);
+
+  auto TestBit = [&](const ui64 arg_index)
+    {
+      bitset.SetBit(arg_index);
+      TEST_CHECK(bitset[arg_index] == true);
+      TEST_CHECK(bitset[alwaysSetBit] == true);
+      bitset.ResetBit(arg_index);
+      TEST_CHECK(bitset[arg_index] == false);
+      TEST_CHECK(bitset[alwaysSetBit] == true);
+    };
+
+  TestBit(0);
+  TestBit(6);
+  TestBit(7);
+  TestBit(8);
+  TestBit(14);
+  TestBit(15);
+  TestBit(16);
+
+  TEST_CHECK(bitset[size] == false); // out of range
 }
