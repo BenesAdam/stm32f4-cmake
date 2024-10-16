@@ -3,31 +3,37 @@
 
 #include "types.h"
 
-template <ui32 Size, typename T = ui32>
+// Interface https://www.geeksforgeeks.org/cpp-bitset-and-its-application/
+
+template <ui64 BitsCount, typename T = ui32>
 class cBitset
 {
 public:
-	cBitset(void);
+  cBitset(void);
 
 private:
-	static constexpr ui32 UnitSize = sizeof(T) * 8U;
-	static constexpr ui32 GetRequiredDataSize(void);
+  static constexpr ui8 blockSize = sizeof(T) * 8U;
+  static constexpr ui64 GetRequiredDataSize(void);
 
-	static constexpr ui32 dataSize = GetRequiredDataSize();
-	T data[dataSize];
+  static constexpr ui64 dataSize = GetRequiredDataSize();
+  T data[dataSize];
 };
 
-template <ui32 Size, typename T>
-inline cBitset<Size, T>::cBitset(void) :
-	data{static_cast<T>(0)}
+template <ui64 BitsCount, typename T>
+inline cBitset<BitsCount, T>::cBitset(void) :
+  data{ static_cast<T>(0) }
 {
 }
 
-template <ui32 Size, typename T>
-inline constexpr ui32 cBitset<Size, T>::GetRequiredDataSize(void)
+// Returns number of blocks that is needed to store all bits.
+template <ui64 BitsCount, typename T>
+inline constexpr ui64 cBitset<BitsCount, T>::GetRequiredDataSize(void)
 {
-	const ui32 missing = (cBitset::UnitSize - (Size % cBitset::UnitSize)) % cBitset::UnitSize;
-	return (Size + missing) / cBitset::UnitSize;
+  constexpr ui64 remainder = BitsCount % cBitset::blockSize;
+  constexpr ui64 padding = (remainder == 0U) ? 0ULL : cBitset::blockSize;
+  constexpr ui64 bitsRoundedUp = BitsCount + padding;
+
+  return bitsRoundedUp / cBitset::blockSize;
 }
 
 template class cBitset<16>;
