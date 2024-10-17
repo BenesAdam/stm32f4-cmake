@@ -10,12 +10,16 @@ class cTestBitset
 {
 public:
   static void Test_GetRequiredDataSize(void);
-  static void Test_Operators(void);
+  static void Test_SetterAndGetter(void);
+  static void Test_Flip(void);
+  static void Test_BitCount(void);
 };
 
 TEST_LIST = {
     { "cTestBitset::Test_GetRequiredDataSize", cTestBitset::Test_GetRequiredDataSize },
-    { "cTestBitset::Test_Operators", cTestBitset::Test_Operators },
+    { "cTestBitset::Test_SetterAndGetter", cTestBitset::Test_SetterAndGetter },
+    { "cTestBitset::Test_Flip", cTestBitset::Test_Flip },
+    { "cTestBitset::Test_BitCount", cTestBitset::Test_BitCount },
     { NULL, NULL }
 };
 
@@ -26,7 +30,7 @@ void cTestBitset::Test_GetRequiredDataSize(void)
   constexpr ui64 ui32Values = static_cast<ui64>(ui32_max) + 1U;
 
   TEST_CASE("ui8");
-  TEST_ASSERT((cBitset<0, ui8>::GetRequiredDataSize()) == 0U);
+  // cBitset<0, ui8> is syntax error - no need to check this
   TEST_ASSERT((cBitset<1, ui8>::GetRequiredDataSize()) == 1U);
   TEST_ASSERT((cBitset<3, ui8>::GetRequiredDataSize()) == 1U);
   TEST_ASSERT((cBitset<8, ui8>::GetRequiredDataSize()) == 1U);
@@ -49,7 +53,6 @@ void cTestBitset::Test_GetRequiredDataSize(void)
   TEST_ASSERT((cBitset<ui32Values, ui16>::GetRequiredDataSize()) == 268435456U);
 
   TEST_CASE("ui32");
-  TEST_ASSERT((cBitset<0, ui32>::GetRequiredDataSize()) == 0U);
   TEST_ASSERT((cBitset<16, ui32>::GetRequiredDataSize()) == 1U);
   TEST_ASSERT((cBitset<32, ui32>::GetRequiredDataSize()) == 1U);
   TEST_ASSERT((cBitset<33, ui32>::GetRequiredDataSize()) == 2U);
@@ -60,7 +63,6 @@ void cTestBitset::Test_GetRequiredDataSize(void)
   TEST_ASSERT((cBitset<ui32Values, ui32>::GetRequiredDataSize()) == 134217728U);
 
   TEST_CASE("ui64");
-  TEST_ASSERT((cBitset<0, ui64>::GetRequiredDataSize()) == 0U);
   TEST_ASSERT((cBitset<40, ui64>::GetRequiredDataSize()) == 1U);
   TEST_ASSERT((cBitset<64, ui64>::GetRequiredDataSize()) == 1U);
   TEST_ASSERT((cBitset<65, ui64>::GetRequiredDataSize()) == 2U);
@@ -71,25 +73,28 @@ void cTestBitset::Test_GetRequiredDataSize(void)
   TEST_ASSERT((cBitset<ui32Values, ui64>::GetRequiredDataSize()) == 67108864U);
 }
 
-void cTestBitset::Test_Operators(void)
+void cTestBitset::Test_SetterAndGetter(void)
 {
+  const ui64 indexAlwaysSet = 13;
   constexpr ui16 size = 256;
-  cBitset<size> bitset;
-
-  const ui64 alwaysSetBit = 13;
-  bitset.SetBit(alwaysSetBit);
-  TEST_CHECK(bitset[alwaysSetBit] == true);
+  cBitset<size, ui8> cut;
+  TEST_CHECK(cut.Size() == size);
 
   auto TestBit = [&](const ui64 arg_index)
     {
-      bitset.SetBit(arg_index);
-      TEST_CHECK(bitset[arg_index] == true);
-      TEST_CHECK(bitset[alwaysSetBit] == true);
-      bitset.ResetBit(arg_index);
-      TEST_CHECK(bitset[arg_index] == false);
-      TEST_CHECK(bitset[alwaysSetBit] == true);
+      cut.Set(arg_index);
+      TEST_CHECK(cut[arg_index] == true);
+      TEST_CHECK(cut[indexAlwaysSet] == true);
+      cut.Reset(arg_index);
+      TEST_CHECK(cut[arg_index] == false);
+      TEST_CHECK(cut[indexAlwaysSet] == true);
     };
 
+  TEST_CASE("Index of always set bit.");
+  cut.Set(indexAlwaysSet);
+  TEST_CHECK(cut[indexAlwaysSet] == true);
+
+  TEST_CASE("Test in range values.");
   TestBit(0);
   TestBit(6);
   TestBit(7);
@@ -97,6 +102,82 @@ void cTestBitset::Test_Operators(void)
   TestBit(14);
   TestBit(15);
   TestBit(16);
+  TestBit(150);
+  TestBit(232);
+  TestBit(255);
 
-  TEST_CHECK(bitset[size] == false); // out of range
+  TEST_CASE("Out of range value.");
+  cut.Set(size);
+  TEST_CHECK(cut[size] == false);
+}
+
+void cTestBitset::Test_Flip(void)
+{
+  const ui64 indexAlwaysSet = 15;
+  constexpr ui16 size = 64;
+  cBitset<size> cut;
+  TEST_CHECK(cut.Size() == size);
+
+  auto TestBit = [&](const ui64 arg_index)
+    {
+      cut.Flip(arg_index);
+      TEST_CHECK(cut[arg_index] == true);
+      TEST_CHECK(cut[indexAlwaysSet] == true);
+      cut.Flip(arg_index);
+      TEST_CHECK(cut[arg_index] == false);
+      TEST_CHECK(cut[indexAlwaysSet] == true);
+    };
+
+  TEST_CASE("Index of always set bit.");
+  cut.Set(indexAlwaysSet);
+  TEST_CHECK(cut[indexAlwaysSet] == true);
+
+  TEST_CASE("Test in range values.");
+  TestBit(0);
+  TestBit(30);
+  TestBit(31);
+  TestBit(32);
+  TestBit(63);
+
+  TEST_CASE("Out of range value.");
+  cut.Flip(size);
+  TEST_CHECK(cut[size] == false);
+  cut.Flip(size);
+  TEST_CHECK(cut[size] == false);
+}
+
+void cTestBitset::Test_BitCount(void)
+{
+  const ui8 expectedSetBits = 8U;
+  const ui64 size = 25ULL;
+  cBitset<size> cut;
+  TEST_CHECK(cut.Size() == size);
+
+  TEST_CASE("No bit is set.");
+  TEST_CHECK(cut.Count() == 0ULL);
+  TEST_CHECK(cut.Any() == false);
+  TEST_CHECK(cut.None() == true);
+  TEST_CHECK(cut.All() == false);
+
+  TEST_CASE("Some bits are set.");
+  for (ui64 i = 0U; i < expectedSetBits; i++)
+  {
+    cut.Set(i * 2ULL);
+  }
+
+  TEST_CHECK(cut.Count() == expectedSetBits);
+  TEST_CHECK(cut.Any() == true);
+  TEST_CHECK(cut.None() == false);
+  TEST_CHECK(cut.All() == false);
+
+  TEST_CASE("All bits are set.");
+  for (ui64 i = 0U; i < size; i++)
+  {
+    cut.Set(i);
+  }
+
+  TEST_CHECK(cut.Count() == size);
+  TEST_CHECK(cut.Any() == true);
+  TEST_CHECK(cut.None() == false);
+  TEST_CHECK(cut.All() == true);
 }

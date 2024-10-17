@@ -56,7 +56,7 @@ void cI2C1::Scan(void)
   {
     if (Read7(I2C1, i, &data, 1U))
     {
-      addressIsReachable[i] = true;
+      addressIsReachable.Set(i);
     }
   }
 }
