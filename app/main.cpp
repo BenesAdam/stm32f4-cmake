@@ -9,6 +9,7 @@ extern "C"
 #include "display.hpp"
 #include "noinit_vars.hpp"
 #include "errorhandler_inst.hpp"
+#include "bitset.hpp"
 
 const ui64 MorseShortDelayTime = 150U; // milliseconds
 const ui64 MorseLongDelayTime = 3U * MorseShortDelayTime;
@@ -36,7 +37,7 @@ int main(void)
   nsNoinitVars::ResetCount++;
   nsNoinitVars::InitializeOnColdStart();
   cSysTick::Setup();
-  cI2C1::Setup();
+  i2c1.Setup();
   InitializeDisplay();
   InitializeLight();
 
@@ -129,9 +130,22 @@ void HandleResets(void)
     return;
   }
 
-  display.Print(L"Another reset...\n");
-  display.Print(L"Count: ");
+  // Print number of resets
+  display.Print(L"Reset No.: ");
   display.Print(static_cast<ui32>(nsNoinitVars::ResetCount));
+  display.NewLine();
+
+  display.Print(L"0b");
+  cBitset<14> bitset(nsNoinitVars::ResetCount);
+  ui8 buffer[bitset.GetStringSize()];
+  bitset.ToString(buffer);
+
+  for(ui8 i = 0U; i < bitset.GetStringSize() - 1U; i++)
+  {
+    display.Print(static_cast<wchar_t>(buffer[i]));
+  }
+
+  // Continue...
   const ui32 waitAfterResetCount = (nsNoinitVars::ResetCount > 1U) ? 1000U : 2000U;
   cSysTick::DelayMs(waitAfterResetCount);
   display.Clear();

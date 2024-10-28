@@ -7,14 +7,19 @@ extern "C"
 #include "libopencm3/stm32/gpio.h"
 }
 
+cI2C1 i2c1;
+
 #define I2C_TIMEOUT_DECLARE(arg_startTime) ui64 arg_startTime
 #define I2C_TIMEOUT_START(arg_startTime) arg_startTime = cSysTick::Micros()
 #define I2C_TIMEOUT_CHECK(arg_startTime)                     \
   if (cSysTick::Micros() - arg_startTime > cI2C1::timeoutUs) \
   {                                                          \
-    /* TODO: Add error to error memory */                    \
-    return;                                                  \
+    return false;                                            \
   }
+
+cI2C1::cI2C1(void) : addressIsReachable()
+{
+}
 
 void cI2C1::Setup(void)
 {
@@ -38,6 +43,27 @@ void cI2C1::Setup(void)
   i2c_peripheral_disable(I2C1);
   i2c_set_speed(I2C1, i2c_speed_sm_100k, rcc_apb1_frequency / 1e6);
   i2c_peripheral_enable(I2C1);
+
+  cSysTick::DelayMs(2U);
+  Scan();
+}
+
+void cI2C1::Scan(void)
+{
+  ui8 data;
+
+  for (ui8 i = 0U; i <= cI2C1::last7BitAddress; i++)
+  {
+    if (Read7(I2C1, i, &data, 1U))
+    {
+      addressIsReachable.Set(i);
+    }
+  }
+}
+
+bool cI2C1::IsAddressReachable(const ui8 arg_address) const
+{
+  return (arg_address <= cI2C1::last7BitAddress) ? addressIsReachable[arg_address] : false;
 }
 
 void cI2C1::WriteByte(const ui8 arg_address, const ui8 arg_data)
@@ -76,12 +102,12 @@ void cI2C1::Transfer7(ui32 i2c, ui8 addr, const ui8 *w, size_t wn, ui8 *r, size_
   // Redefinition of i2c_transfer7
   if (wn)
   {
-    Write7(i2c, addr, w, wn);
+    static_cast<void>(Write7(i2c, addr, w, wn));
   }
 
   if (rn)
   {
-    Read7(i2c, addr, r, rn);
+    static_cast<void>(Read7(i2c, addr, r, rn));
   }
 
   i2c_send_stop(i2c);
@@ -90,7 +116,7 @@ void cI2C1::Transfer7(ui32 i2c, ui8 addr, const ui8 *w, size_t wn, ui8 *r, size_
 /*
  * Redefinition of i2c_write7_v1
  */
-void cI2C1::Write7(ui32 i2c, ui8 addr, const ui8 *data, size_t n)
+bool cI2C1::Write7(ui32 i2c, ui8 addr, const ui8 *data, size_t n)
 {
   I2C_TIMEOUT_DECLARE(timer);
 
@@ -123,19 +149,22 @@ void cI2C1::Write7(ui32 i2c, ui8 addr, const ui8 *data, size_t n)
 
   for (size_t i = 0; i < n; i++)
   {
-    I2C_TIMEOUT_START(timer);
     i2c_send_data(i2c, data[i]);
+    
+    I2C_TIMEOUT_START(timer);
     while (!(I2C_SR1(i2c) & (I2C_SR1_BTF)))
     {
       I2C_TIMEOUT_CHECK(timer);
     }
   }
+
+  return true;
 }
 
 /*
  * Redefinition of i2c_read7_v1
  */
-void cI2C1::Read7(ui32 i2c, ui8 addr, ui8 *res, size_t n)
+bool cI2C1::Read7(ui32 i2c, ui8 addr, ui8 *res, size_t n)
 {
   I2C_TIMEOUT_DECLARE(timer);
   i2c_send_start(i2c);
@@ -175,4 +204,6 @@ void cI2C1::Read7(ui32 i2c, ui8 addr, ui8 *res, size_t n)
 
     res[i] = i2c_get_data(i2c);
   }
+
+  return true;
 }

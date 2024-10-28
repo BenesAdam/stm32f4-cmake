@@ -2,8 +2,8 @@
 
 const sErrorConfig cErrorHandler::ErrorConfig[E_NUMBER_OF_ERRORS] =
 {
-// Error number         |       Error enable        |       Reaction
-{  E_FREE_TO_USE,              E_ERROR_ENABLED,            NONE_REACT}
+// Error number                  |       Error enable        |       Reaction
+{  E_DISPLAY_NOT_CONNECTED,              E_ERROR_ENABLED,            NONE_REACT}
 };
 
 sErrorFlags cErrorHandler::ErrorFlags[E_NUMBER_OF_ERRORS];

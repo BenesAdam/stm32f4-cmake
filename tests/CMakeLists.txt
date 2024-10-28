@@ -15,5 +15,6 @@ endmacro()
 set(SOURCE_DIR "${PROJECT_SOURCE_DIR}/src")
 
 # Unit tests
+add_subdirectory(bitset)
 add_subdirectory(map)
 add_subdirectory(systick)

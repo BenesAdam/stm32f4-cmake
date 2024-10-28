@@ -1,5 +1,6 @@
 add_executable(firmware main.cpp)
 target_link_libraries(firmware
+    bitset
     libopencm3
     common
     display

@@ -1,6 +1,7 @@
 #include "display.hpp"
 #include "i2c1.hpp"
 #include "systick.hpp"
+#include "errorhandler_inst.hpp"
 
 cDisplay::cDisplay(void) : address(0U), backlight(LCD_BIT_NO_BL)
 {
@@ -9,6 +10,11 @@ cDisplay::cDisplay(void) : address(0U), backlight(LCD_BIT_NO_BL)
 void cDisplay::Init(const ui8 arg_i2c_address)
 {
   address = arg_i2c_address;
+
+  if (!i2c1.IsAddressReachable(address))
+  {
+    ErrorHandler.SetErrorActive(E_DISPLAY_NOT_CONNECTED);
+  }
 
   // DelayMs 15ms
   cSysTick::DelayMs(20U);
@@ -88,18 +94,18 @@ void cDisplay::Print(const ui32 arg_number, const ui64 arg_pauseInMs)
   const ui16 maxSize = 11U; // ui32 -> 10 digits + 1 terminator ('\0')
   wchar_t str[maxSize];
   str[maxSize - 1U] = L'\0';
-  
+
   ui32 index = maxSize - 2U;
   ui32 remainder = arg_number;
 
-  while(remainder > 0U)
+  while (remainder > 0U)
   {
     str[index] = L'0' + (remainder % 10U);
     remainder /= 10U;
     index--;
   }
 
-  if(arg_number != 0U)
+  if (arg_number != 0U)
   {
     index++;
   }
