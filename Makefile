@@ -94,7 +94,7 @@ compile: generate
 target:
 ifdef t
 	@echo "Running target $(t)..."
-	@cmake --build build/ -j$(shell nproc) -t $(t) --
+	@cmake --build build/ -j$(shell nproc) -t $(t) $(VERBOSE_FLAG) --
 	@echo "Target $(t) executed."
 else
 	@echo "Error: No target specified."

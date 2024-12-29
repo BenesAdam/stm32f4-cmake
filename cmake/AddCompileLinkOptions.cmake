@@ -16,6 +16,7 @@ function(add_compile_link_options target visibility)
         --static
         -nostartfiles
         -fno-common
+        -fno-exceptions
         -mthumb
         --specs=nano.specs
         ${PLATFORM_COMPILE_OPTIONS}

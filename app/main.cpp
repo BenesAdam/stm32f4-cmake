@@ -1,3 +1,6 @@
+#include <string>
+#include <bitset>
+
 extern "C"
 {
 #include <libopencm3/stm32/rcc.h>
@@ -9,7 +12,7 @@ extern "C"
 #include "display.hpp"
 #include "noinit_vars.hpp"
 #include "errorhandler_inst.hpp"
-#include "bitset.hpp"
+// #include "bitset.hpp"
 
 const ui64 MorseShortDelayTime = 150U; // milliseconds
 const ui64 MorseLongDelayTime = 3U * MorseShortDelayTime;
@@ -136,13 +139,12 @@ void HandleResets(void)
   display.NewLine();
 
   display.Print(L"0b");
-  cBitset<14> bitset(nsNoinitVars::ResetCount);
-  ui8 buffer[bitset.GetStringSize()];
-  bitset.ToString(buffer);
+  std::bitset<14> bitset(nsNoinitVars::ResetCount);
+  std::string str = bitset.to_string();
 
-  for(ui8 i = 0U; i < bitset.GetStringSize() - 1U; i++)
+  for(ui8 i = 0U; i < str.size(); i++)
   {
-    display.Print(static_cast<wchar_t>(buffer[i]));
+    display.Print(static_cast<wchar_t>(str[i]));
   }
 
   // Continue...

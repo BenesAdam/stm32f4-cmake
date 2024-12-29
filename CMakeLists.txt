@@ -20,7 +20,7 @@ option(ENABLE_LIBOPENCM3_USE_STATIC "Whether to use libopencm3 as STATIC library
 option(ENABLE_LIBOPENCM3_REMOVE_UNUSED "Whether to remove unused folders and files after clone of repository." ON)
 
 option(ENABLE_UNIT_TEST "Whether to enable unit testing." OFF)
-option(ENABLE_PLATFORM_STM32F1 "Whether to use bluepill or blackpill. (default OFF = blackpill)" OFF)
+option(ENABLE_PLATFORM_STM32F1 "Whether to use bluepill or blackpill. (default OFF = blackpill)" ON)
 
 # Modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
