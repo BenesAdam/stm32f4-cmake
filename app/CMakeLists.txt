@@ -1,4 +1,4 @@
-add_executable(firmware main.cpp)
+add_executable(firmware main_can.cpp)
 target_link_libraries(firmware
     bitset
     libopencm3
@@ -9,6 +9,7 @@ target_link_libraries(firmware
     noinit_vars
     systick
     errorhandler
+    can
 )
 
 set(LINKER_SCRIPT_FILE ${PROJECT_SOURCE_DIR}/linker/${PLATFORM_FULL_NAME_UPPER_CASE}.ld)

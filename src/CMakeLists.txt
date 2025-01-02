@@ -9,9 +9,11 @@ if(NOT ENABLE_UNIT_TEST)
     add_subdirectory(noinit_vars)
     add_subdirectory(errorhandler)
 
-    # Add here components that are not compatible with STM32F1
     if(NOT ENABLE_PLATFORM_STM32F1)
-        
-    endif()
+        # Add here components that are not compatible with STM32F1
     
+    else()
+        # Add here components that are compatible with STM32F1
+        add_subdirectory(can)
+    endif()    
 endif()
