@@ -7,6 +7,7 @@ target_link_libraries(firmware
     i2c
     map
     noinit_vars
+    scheduler
     systick
     errorhandler
     can
