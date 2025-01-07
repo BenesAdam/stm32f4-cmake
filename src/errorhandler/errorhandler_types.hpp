@@ -14,6 +14,7 @@ constexpr ui8 errorTableSize = 10U;
 enum eErrors:ui8
 {
   E_DISPLAY_NOT_CONNECTED = 0U,
+  E_SCHEDULER_RUNTIME_EXCEED = 1U,
 
   //End of enum - dont touch it
   E_NUMBER_OF_ERRORS,

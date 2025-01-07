@@ -3,11 +3,6 @@
 
 #include "types.h"
 
-extern "C"
-{
-  // #include "libopencm3/stm32/i2c.h"
-}
-
 class cScheduler
 {
 public:
@@ -24,12 +19,13 @@ public:
   void Cyclic(void);
 
 private:
-  const ui64 frequenceMs;
+  const ui64 frequenceMicros;
   const sTimeSlot *const timeSlots;
   const ui8 length;
 
-  ui64 nextCycleStartMs;
+  ui64 nextCycleStartMicros;
   ui32 cycleCounter;
+  ui64 maxRuntime;
 };
 
 #endif /* SCHEDULER_HPP */

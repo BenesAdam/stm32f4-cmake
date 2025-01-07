@@ -3,7 +3,8 @@
 const sErrorConfig cErrorHandler::ErrorConfig[E_NUMBER_OF_ERRORS] =
 {
 // Error number                  |       Error enable        |       Reaction
-{  E_DISPLAY_NOT_CONNECTED,              E_ERROR_ENABLED,            NONE_REACT}
+{  E_DISPLAY_NOT_CONNECTED,              E_ERROR_ENABLED,            NONE_REACT},
+{  E_SCHEDULER_RUNTIME_EXCEED,           E_ERROR_ENABLED,            NONE_REACT}
 };
 
 sErrorFlags cErrorHandler::ErrorFlags[E_NUMBER_OF_ERRORS];

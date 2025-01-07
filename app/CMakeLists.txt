@@ -38,3 +38,18 @@ target_link_options(firmware PRIVATE
     -Wl,--undefined=_lseek
     -Wl,--undefined=_sbrk
 )
+
+# Target for object dump
+set(OBJ_DUMP_OUTPUT_NAME ${CMAKE_CURRENT_BINARY_DIR}/firmware.asm)
+set(OBJ_DUMP_DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/firmware.elf)
+add_custom_command(
+    OUTPUT
+    ${OBJ_DUMP_OUTPUT_NAME}
+    COMMAND
+    arm-none-eabi-objdump -D -d ${OBJ_DUMP_DEPENDS} -marm > ${OBJ_DUMP_OUTPUT_NAME}
+    COMMAND echo Object dump created. \(${OBJ_DUMP_OUTPUT_NAME}\)
+    DEPENDS
+    firmware
+)
+
+add_custom_target(obj_dump DEPENDS ${OBJ_DUMP_OUTPUT_NAME})
