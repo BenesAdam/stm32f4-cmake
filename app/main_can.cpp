@@ -35,8 +35,6 @@ int main(void)
 
   InitializeLight();
 
-  cSysTick::DelayMs(2000U);
-
   while (true)
   {
     Scheduler.Cyclic();
@@ -69,8 +67,6 @@ void Task100ms(void)
 #else
 // Receive time from other message
 // Transmit time + 0xAA000000
-volatile ui32 Global_messagesAddr;
-
 void Task100ms(void)
 {
   ErrorHandler.Cyclic();
@@ -78,25 +74,8 @@ void Task100ms(void)
   // ui32 seconds = cSysTick::Millis() / 1000ULL;
   // cCan1::TransmitNumber(seconds);
 
-  // volatile ui32 MessageAddr = (ui32)&Rx_MsgTimeStamp;
-  // volatile auto time = Rx_MsgTimeStamp.GetIdentifier();
-
-  // volatile ui32 RxBufferAddr = (ui32)&RxMessageList;
-  // volatile ui32 RxBufferDataStartAddr = (ui32)&RxMessageList.messages;
-  // volatile ui32 StaticCanMessageDataStartAddr = (ui32)cCanMessage::RxMessageList.DataStart;
-  // volatile ui32 StaticCanMessageMessageAddr = (ui32)cCanMessage::RxMessageList.DataStart[0];
-
-  // cCanMessage::Receive();
-
-  volatile ui8 a = 5;
-  sCanMessageList<2U> loc_RxMessageList(cCanMessage::eDirection::Receive);
-  volatile ui32 addr_list = (ui32)&loc_RxMessageList;
-
-  cCanMessage Rx_Msg00(cCanMessage::eDirection::Receive, cCanMessage::eFormat::Standard, 50U, 8U);
-  cCanMessage Rx_Msg01(cCanMessage::eDirection::Receive, cCanMessage::eFormat::Standard, 51U, 8U);
-
-  cCanMessage::Receive();
-
+  volatile ui32 MessageAddr = (ui32)&Rx_MsgTimeStamp;
+  volatile ui32 Identifier = Rx_MsgTimeStamp.GetIdentifier();
 }
 #endif
 

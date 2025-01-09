@@ -1,65 +1,40 @@
 #include "can_message.hpp"
 #include "can1.hpp"
 
-cCanMessage::sMessageList cCanMessage::RxMessageList;
-cCanMessage::sMessageList cCanMessage::TxMessageList;
-
-volatile ui32 Global_MsgCtor_Good = 0U;
-volatile ui32 Global_MsgCtor_Addr = 0U;
-volatile ui32 Global_MsgCtor_DataAddr = 0U;
-volatile ui32 Gloval_MsgCtor_InArray = 0U;
-volatile ui32 Gloval_Ctor_CallOrder = 0U;
-
 cCanMessage::cCanMessage(const eDirection arg_direction, const eFormat arg_format, const ui32 arg_identifier, const ui8 arg_length)
     : direction(arg_direction),
       format(arg_format),
       identifier(arg_identifier),
       length(arg_length),
-      data{0}
+      data{0},
+      received(false)
 {
-  sMessageList& messageList = (direction == eDirection::Receive) ? RxMessageList : TxMessageList;
-
-  // TODO: move this to message list structure
-  const bool dataStartIsNull = messageList.DataStart == nullptr;
+  sMessageList &messageList = (direction == eDirection::Receive) ? RxMessageList : TxMessageList;
+  const bool dataStartIsNull = messageList.Messages == nullptr;
   const bool bufferExceed = messageList.Size >= messageList.MaxSize;
 
   if (dataStartIsNull || bufferExceed)
   {
-    // TODO: Check message list
+    // You need to call CREATE_RX_MESSAGE_LIST(n) and CREATE_TX_MESSAGE_LIST(m)
+    // somewhere in cpp file to define CAN message lists.
     debug();
     return;
   }
 
-
-  messageList.DataStart[messageList.Size] = this;
-  
-  
-  Global_MsgCtor_Good++;
-  Global_MsgCtor_Addr = (ui32)this;
-  Gloval_MsgCtor_InArray = (ui32)messageList.DataStart[0];
-
-
-
+  messageList.Messages[messageList.Size] = this;
   messageList.Size++;
-
-  Gloval_Ctor_CallOrder = (Gloval_Ctor_CallOrder << 8) | 0x01;
 }
 
-void cCanMessage::SetMessageList(const cCanMessage::eDirection arg_direction, cCanMessage **arg_messageList, const ui16 arg_size)
+void cCanMessage::SetMessageList(const cCanMessage::eDirection arg_direction, cCanMessage *arg_messageList[], const ui16 arg_size)
 {
-  if(arg_direction == eDirection::Receive)
+  if (arg_direction == eDirection::Receive)
   {
-    Global_messagesAddr = (ui32)arg_messageList;
-    RxMessageList.DataStart = arg_messageList;
+    RxMessageList.Messages = arg_messageList;
     RxMessageList.MaxSize = arg_size;
-
-    Global_MsgCtor_DataAddr = (ui32)RxMessageList.DataStart;
-
-    Gloval_Ctor_CallOrder = (Gloval_Ctor_CallOrder << 8) | 0x02;
   }
   else
   {
-    TxMessageList.DataStart = arg_messageList;
+    TxMessageList.Messages = arg_messageList;
     TxMessageList.MaxSize = arg_size;
   }
 }
@@ -74,22 +49,32 @@ void cCanMessage::Transmit(void)
   can_transmit(CAN1, identifier, (format == eFormat::Extended), false, length, data);
 }
 
-void cCanMessage::Receive(void)
+void cCanMessage::IrqReceive(const sObjectReceived &arg_obj)
 {
-  volatile cCanMessage* message = RxMessageList.DataStart[0];
+  const eFormat receivedFormat = (arg_obj.Extended) ? eFormat::Extended : eFormat::Standard;
 
-  volatile auto id = message->identifier;
-  volatile auto size = message->dataSize;
+  for (ui16 i = 0; i < RxMessageList.Size; ++i)
+  {
+    cCanMessage &message = *(RxMessageList.Messages[i]);
+
+    if ((message.format == receivedFormat) && (message.identifier == arg_obj.Identifier))
+    {
+      message.CopyData(arg_obj);
+      message.received = true;
+      return;
+    }
+  }
+}
+
+void cCanMessage::CopyData(const sObjectReceived &arg_obj)
+{
+  for (ui8 i = 0U; (i < length) && (i < arg_obj.Length); i++)
+  {
+    data[i] = arg_obj.Data[i];
+  }
 }
 
 ui32 cCanMessage::GetIdentifier(void) const
 {
   return identifier;
-}
-
-cCanMessage::sMessageList::sMessageList(void)
-: DataStart(nullptr),
-  MaxSize(0U),
-  Size(0U)
-{
 }

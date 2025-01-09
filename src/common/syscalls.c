@@ -20,7 +20,8 @@ void _exit(int status)
 {
   while (1)
   {
-    // TODO: Maybe jump to some error handling routine?
+    // TODO: Change types.h to be includable from c file.
+    __asm__("BKPT #0"); // debug break point
   }
 }
 

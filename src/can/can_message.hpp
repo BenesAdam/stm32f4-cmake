@@ -2,6 +2,19 @@
 
 #include "types.h"
 
+#define CREATE_RX_MESSAGE_LIST(Size) _CREATE_CAN_MESSAGE_LIST(Rx, Size, Receive)
+#define CREATE_TX_MESSAGE_LIST(Size) _CREATE_CAN_MESSAGE_LIST(Tx, Size, Transmit)
+
+#define _CREATE_CAN_MESSAGE_LIST(Prefix, Size, Type)\
+  cCanMessage::sMessageList cCanMessage::Prefix##MessageList;\
+  namespace nsCanMessagePrivate\
+  {\
+    sCanMessageList<Size> Prefix##MessageList(cCanMessage::eDirection::Type);\
+  }
+
+// Important
+// Use CREATE_RX_MESSAGE_LIST and CREATE_TX_MESSAGE_LIST in cpp file before
+// defining any cCanMessage.
 class cCanMessage
 {
 public:
@@ -19,18 +32,26 @@ public:
 
   struct sMessageList
   {
-    cCanMessage** DataStart;
+    cCanMessage** Messages;
     ui16 MaxSize;
     ui16 Size;
+  };
 
-    sMessageList(void);
+  struct sObjectReceived
+  {
+    ui32 Identifier;
+	  bool Extended;
+    bool RemoteTransitionRequest;
+    ui8  MatchedFilterIdentifier;
+    ui8  Length;
+    ui8  Data[8U];
   };
 
   cCanMessage(const eDirection arg_direction, const eFormat arg_format, const ui32 arg_identifier, const ui8 arg_length);
-  static void SetMessageList(const cCanMessage::eDirection arg_direction, cCanMessage** arg_messageList, const ui16 arg_size);
+  static void SetMessageList(const cCanMessage::eDirection arg_direction, cCanMessage *arg_messageList[], const ui16 arg_size);
   
   void Transmit(void);
-  static void Receive(void);
+  static void IrqReceive(const sObjectReceived& arg_obj);
 
   ui32 GetIdentifier(void) const;
 
@@ -38,6 +59,8 @@ public:
   static sMessageList TxMessageList;
 
 private:
+  void CopyData(const sObjectReceived& arg_obj);
+
   const eDirection direction;
   const eFormat format;
   const ui32 identifier;
@@ -45,6 +68,7 @@ private:
 
   static const ui8 dataSize = 8U;
   ui8 data[dataSize]; // TODO: make data size based on constructor parameter length
+  bool received;
 };
 
 template <ui16 Size>
@@ -53,10 +77,8 @@ struct sCanMessageList
   cCanMessage *messages[Size];
   const ui16 size = Size;
  
-  explicit sCanMessageList(const cCanMessage::eDirection arg_direction);
+  sCanMessageList(const cCanMessage::eDirection arg_direction);
 };
-
-extern volatile ui32 Global_messagesAddr;
 
 template <ui16 Size>
 inline sCanMessageList<Size>::sCanMessageList(const cCanMessage::eDirection arg_direction)

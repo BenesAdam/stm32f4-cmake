@@ -8,6 +8,7 @@ extern "C"
 }
 
 #include "can1.hpp"
+#include "can_message.hpp"
 
 cCan1::cCan1(void)
 {
@@ -32,7 +33,7 @@ void cCan1::Setup(void)
 
   /* - Tx - output AF pushpull */
   gpio_set_mode(GPIO_BANK_CAN1_TX, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_CAN1_TX);
-  
+
   /* NVIC */
   nvic_enable_irq(NVIC_USB_LP_CAN_RX0_IRQ);
   nvic_set_priority(NVIC_USB_LP_CAN_RX0_IRQ, 1);
@@ -41,34 +42,35 @@ void cCan1::Setup(void)
   can_reset(CAN1);
 
   /* Initialize CAN for 500 kBaud */
-  bool initDone = can_init(
-    /* canport  */ CAN1,
-    /* ttcm     */ false,
-    /* abom     */ true,
-    /* awum     */ true,
-    /* nart     */ true,
-    /* rflm     */ true,
-    /* txfp     */ true,
-    /* sjw      */ CAN_BTR_SJW_1TQ,
-    /* ts1      */ CAN_BTR_TS1_15TQ,
-    /* ts2      */ CAN_BTR_TS2_2TQ,
-    /* brp      */ 4,
-    /* loopback */ false,
-    /* silent   */ false
-  );
+  bool initFailed = can_init(
+      /* canport  */ CAN1,
+      /* ttcm     */ false,
+      /* abom     */ true,
+      /* awum     */ true,
+      /* nart     */ true,
+      /* rflm     */ true,
+      /* txfp     */ true,
+      /* sjw      */ CAN_BTR_SJW_1TQ,
+      /* ts1      */ CAN_BTR_TS1_15TQ,
+      /* ts2      */ CAN_BTR_TS2_2TQ,
+      /* brp      */ 4,
+      /* loopback */ false,
+      /* silent   */ false);
 
-  // TODO: what if initialization is not done correctly?
+  if (initFailed)
+  {
+    debug();
+  }
 }
 
-void usb_lp_can_rx0_isr(void)
+extern "C" void usb_lp_can_rx0_isr(void)
 {
-	uint32_t id;
-	bool ext, rtr;
-	uint8_t fmi, length, data[8];
+  cCanMessage::sObjectReceived object;
 
-	can_receive(CAN1, 0, false, &id, &ext, &rtr, &fmi, &length, data, NULL);
+  can_receive(CAN1, 0, false, &object.Identifier, &object.Extended, &object.RemoteTransitionRequest,
+              &object.MatchedFilterIdentifier, &object.Length, object.Data, NULL);
 
-  
+  cCanMessage::IrqReceive(object);
 
-	can_fifo_release(CAN1, 0);
+  can_fifo_release(CAN1, 0);
 }

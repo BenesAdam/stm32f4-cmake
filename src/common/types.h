@@ -46,7 +46,7 @@ constexpr si64 si64_max = INT64_MAX;
 
 #if (DEBUG_BREAK_ENABLE == 1)
 // Add debug breakpoint
-#define debug() __asm__("BKPT #0")
+#define debug() while(true) __asm__("BKPT #0")
 #else
 #define debug()
 #endif
