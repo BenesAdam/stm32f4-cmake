@@ -68,20 +68,7 @@ void usb_lp_can_rx0_isr(void)
 
 	can_receive(CAN1, 0, false, &id, &ext, &rtr, &fmi, &length, data, NULL);
 
-  // TODO: Do something?
+  
 
 	can_fifo_release(CAN1, 0);
-}
-
-void cCan1::TransmitNumber(const ui32 arg_number)
-{
-  /* Manual: 
-  https://github.com/libopencm3/libopencm3-examples/blob/master/examples/stm32/f1/obldc-strip/can/can.c 
-  */
-
-  ui8 data[8U];
-  memset(data, 0U, 8U);
-  memcpy(data, &arg_number, sizeof(ui32));
-
-  can_transmit(CAN1, 0xAAU, false, false, sizeof(ui32), data);
 }

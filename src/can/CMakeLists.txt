@@ -1,4 +1,8 @@
 add_library(can STATIC
+    can_cfg.cpp
+    can_cfg.hpp
+    can_message.cpp
+    can_message.hpp    
     can1.cpp
     can1.hpp
 )

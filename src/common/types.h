@@ -44,7 +44,11 @@ constexpr si64 si64_max = INT64_MAX;
 // map defines
 #define NOINIT __attribute__((section(".noinit")))
 
-// debug
+#if (DEBUG_BREAK_ENABLE == 1)
+// Add debug breakpoint
 #define debug() __asm__("BKPT #0")
+#else
+#define debug()
+#endif
 
 #endif // TYPES_HPP
