@@ -61,6 +61,17 @@ void cCan1::Setup(void)
   {
     debug();
   }
+
+  /* CAN filter 0 init. */
+  can_filter_id_mask_32bit_init(
+      0,     /* Filter ID */
+      0,     /* CAN ID */
+      0,     /* CAN ID mask */
+      0,     /* FIFO assignment (here: FIFO0) */
+      true); /* Enable the filter. */
+
+  /* Enable CAN RX interrupt. */
+  can_enable_irq(CAN1, CAN_IER_FMPIE0);
 }
 
 extern "C" void usb_lp_can_rx0_isr(void)
