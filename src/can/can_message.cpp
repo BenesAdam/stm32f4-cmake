@@ -1,3 +1,4 @@
+#include <cstring>
 #include "can_message.hpp"
 #include "can1.hpp"
 
@@ -77,4 +78,14 @@ void cCanMessage::CopyData(const sObjectReceived &arg_obj)
 ui32 cCanMessage::GetIdentifier(void) const
 {
   return identifier;
+}
+
+void cCanMessage::GetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data) const
+{
+  if ((arg_byteIndex >= dataSize) || ((arg_byteIndex + arg_size) > dataSize))
+  {
+    return;
+  }
+
+  memcpy(arg_data, data + arg_byteIndex, arg_size);
 }

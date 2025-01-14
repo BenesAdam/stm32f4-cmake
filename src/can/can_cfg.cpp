@@ -9,8 +9,8 @@ cCanMessage Rx_MsgTimeStamp(
     0xAA,
     4U);
 
-// cCanSignal Rx_TimeSeconds(
-//   &Rx_MsgTimeStamp,
-//   0U,
-//   4U
-// );
+cCanSignal Rx_TimeSeconds(
+  &Rx_MsgTimeStamp,
+  0U,
+  4U
+);

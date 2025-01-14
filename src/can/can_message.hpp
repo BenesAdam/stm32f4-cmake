@@ -54,6 +54,7 @@ public:
   static void IrqReceive(const sObjectReceived& arg_obj);
 
   ui32 GetIdentifier(void) const;
+  void GetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data) const;
 
   static sMessageList RxMessageList;
   static sMessageList TxMessageList;
