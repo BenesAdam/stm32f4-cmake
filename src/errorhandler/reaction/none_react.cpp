@@ -4,6 +4,6 @@ cNoneReact::cNoneReact(void)
 {
 }
 
-void cNoneReact::ErrorReaction(void)
+void cNoneReact::ErrorReaction(const ui16 arg_errorNumber)
 {
 }

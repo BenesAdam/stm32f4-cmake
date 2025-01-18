@@ -6,7 +6,7 @@ target_link_libraries(firmware
     display
     i2c
     map
-    noinit_vars
+    reset
     systick
     errorhandler
 )

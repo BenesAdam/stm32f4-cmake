@@ -7,7 +7,7 @@ class cResetReact : public cErrorReaction
 {
 public:
   cResetReact(void);
-  void ErrorReaction(void);
+  void ErrorReaction(const ui16 arg_errorNumber);
 };
 
 #endif

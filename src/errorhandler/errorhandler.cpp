@@ -3,7 +3,8 @@
 const sErrorConfig cErrorHandler::ErrorConfig[E_NUMBER_OF_ERRORS] =
 {
 // Error number                  |       Error enable        |       Reaction
-{  E_DISPLAY_NOT_CONNECTED,              E_ERROR_ENABLED,            NONE_REACT}
+{  E_DISPLAY_NOT_CONNECTED,              E_ERROR_ENABLED,            NONE_REACT },
+{  E_TESTING,                            E_ERROR_ENABLED,            RESET_REACT}
 };
 
 sErrorFlags cErrorHandler::ErrorFlags[E_NUMBER_OF_ERRORS];
@@ -37,7 +38,7 @@ void cErrorHandler::Cyclic(void)
     if(WouldErrorBeProccessed(errorIndex))
       {
         AddToErrorTable(errorIndex);
-        ErrorConfig[errorIndex].reaction->ErrorReaction();
+        ErrorConfig[errorIndex].reaction->ErrorReaction(errorIndex);
       }
   }
 

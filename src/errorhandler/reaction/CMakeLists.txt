@@ -7,4 +7,4 @@ add_library(error_reaction STATIC
 )
 
 target_include_directories(error_reaction PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(error_reaction common libopencm3)
+target_link_libraries(error_reaction reset common libopencm3)

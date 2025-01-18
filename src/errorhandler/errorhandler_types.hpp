@@ -14,7 +14,7 @@ constexpr ui8 errorTableSize = 10U;
 enum eErrors:ui8
 {
   E_DISPLAY_NOT_CONNECTED = 0U,
-
+  E_TESTING,
   //End of enum - dont touch it
   E_NUMBER_OF_ERRORS,
   E_NO_ERROR = 255U

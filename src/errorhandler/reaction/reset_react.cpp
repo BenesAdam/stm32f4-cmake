@@ -1,15 +1,11 @@
 #include "reset_react.hpp"
-
-extern "C"
-{
-  #include "libopencm3/cm3/scb.h"
-}
+#include "reset_inst.hpp"
 
 cResetReact::cResetReact(void)
 {
 }
 
-void cResetReact::ErrorReaction(void)
+void cResetReact::ErrorReaction(const ui16 arg_errorNumber)
 {
-  scb_reset_system();
+  Reset.SoftwareReset(E_ERRORHANDLER_REACTION, arg_errorNumber);
 }
