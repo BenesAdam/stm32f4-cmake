@@ -47,7 +47,7 @@ void cCan1::Setup(void)
       /* ttcm     */ false,
       /* abom     */ true,
       /* awum     */ true,
-      /* nart     */ true,
+      /* nart     */ false,
       /* rflm     */ true,
       /* txfp     */ true,
       /* sjw      */ CAN_BTR_SJW_1TQ,

@@ -80,6 +80,16 @@ ui32 cCanMessage::GetIdentifier(void) const
   return identifier;
 }
 
+bool cCanMessage::IsReceived(void) const
+{
+  return received;
+}
+
+void cCanMessage::ResetReceived(void)
+{
+  received = false;
+}
+
 void cCanMessage::GetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data) const
 {
   if ((arg_byteIndex >= dataSize) || ((arg_byteIndex + arg_size) > dataSize))

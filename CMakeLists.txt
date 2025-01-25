@@ -24,6 +24,7 @@ option(ENABLE_PLATFORM_STM32F1 "Whether to use bluepill or blackpill. (default O
 
 # Modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
+include(Defines)
 include(Platform)
 include(CPM)
 include(ConfigSafeGuards)
@@ -35,11 +36,14 @@ endif()
 
 # Subdirectories
 add_subdirectory(src)
-add_subdirectory(tools)
 if(ENABLE_UNIT_TEST)
-    include(CTest)
-    enable_testing()    
-    add_subdirectory(tests)
+include(CTest)
+enable_testing()    
+add_subdirectory(tests)
 else()
-    add_subdirectory(app)
+add_subdirectory(app)
 endif()
+
+# Tools
+finalize_opt_define()
+add_subdirectory(tools)

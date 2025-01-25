@@ -34,6 +34,9 @@ int main(void)
   cCan1::Setup();
 
   InitializeLight();
+  gpio_clear(LED_PORT, LED_PIN);
+
+  cSysTick::DelayMs(2000U);
 
   while (true)
   {
@@ -49,51 +52,120 @@ void InitializeLight(void)
   gpio_set_mode(LED_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, LED_PIN);
 }
 
-// ECU New
-#define ECU_NEW 0
+enum class eState
+{
+  DETERMINE_LOWER_ID,
+  COOLDOWN,
+  ACTIVE,
+  PASSIVE
+};
 
-#if (ECU_NEW == 1)
-// Send time in seconds every 100ms
-// Do nothing with received messages
 void Task100ms(void)
 {
   ErrorHandler.Cyclic();
 
-  ui32 seconds = cSysTick::Millis() / 1000ULL;
-  ui8 data[8U];
-  *data = seconds; // dirty but works
-  can_transmit(CAN1, 0xAAU, false, false, sizeof(ui32), data);
+  const ui16 waitTimeCycles = 20U; // 5 seconds
+  static eState state = eState::DETERMINE_LOWER_ID;
+  static ui16 waitCounter = 0U;
+  static ui16 sendCounter = 0U;
+  static bool winner = false;
+
+  switch (state)
+  {
+  case eState::DETERMINE_LOWER_ID:
+  {
+    Tx_UniqueIdentifier0.StoreData(DESIG_UNIQUE_ID0);
+    Tx_UniqueIdentifier1.StoreData(DESIG_UNIQUE_ID1);
+    Tx_MsgUniqueIdentifier0.Transmit();
+
+    if (Rx_MsgUniqueIdentifier0.IsReceived())
+    {
+      Rx_UniqueIdentifier0.FetchData();
+      Rx_UniqueIdentifier1.FetchData();
+      Rx_MsgUniqueIdentifier0.ResetReceived();
+
+      const ui64 txUniqueIdentifier = (static_cast<ui64>(DESIG_UNIQUE_ID0) << 32U) | (DESIG_UNIQUE_ID1);
+      const ui64 rxUniqueIdentifier = (static_cast<ui64>(Rx_UniqueIdentifier0.Get()) << 32U) | (Rx_UniqueIdentifier1.Get());
+      winner = (txUniqueIdentifier > rxUniqueIdentifier);
+
+      waitCounter = 2U;
+
+      if (winner)
+      {
+        waitCounter *= 2U;
+      }
+
+      state = eState::COOLDOWN;
+    }
+  }
+  break;
+
+  case eState::COOLDOWN:
+  {
+    Tx_UniqueIdentifier0.StoreData(DESIG_UNIQUE_ID0);
+    Tx_UniqueIdentifier1.StoreData(DESIG_UNIQUE_ID1);
+    Tx_MsgUniqueIdentifier0.Transmit();
+
+    if (winner)
+    {
+      gpio_clear(LED_PORT, LED_PIN);
+    }
+    else
+    {
+      gpio_set(LED_PORT, LED_PIN);
+    }
+
+    if (waitCounter == 0U)
+    {
+      state = (winner) ? eState::ACTIVE : eState::PASSIVE;
+    }
+    else
+    {
+      waitCounter--;
+    }
+  }
+  break;
+
+  case eState::ACTIVE:
+  {
+    gpio_clear(LED_PORT, LED_PIN);
+
+    if (waitCounter == 0U)
+    {
+      Tx_CounterUi16.StoreData(sendCounter);
+      Tx_CounterInvertUi16.StoreData(~sendCounter);
+      Tx_MsgCounter.Transmit();
+
+      state = eState::PASSIVE;
+    }
+    else
+    {
+      waitCounter--;
+    }
+  }
+  break;
+
+  case eState::PASSIVE:
+  {
+    gpio_set(LED_PORT, LED_PIN);
+
+    if (Rx_MsgCounter.IsReceived())
+    {
+      Rx_CounterUi16.FetchData();
+      Rx_MsgCounter.ResetReceived();
+
+      sendCounter = Rx_CounterUi16.Get() + 1U;
+      waitCounter = waitTimeCycles;
+      state = eState::ACTIVE;
+    }
+  }
+  break;
+
+  default:
+    break;
+  }
 }
-#else
-// Receive time from other message
-// Transmit time + 0xAA000000
-void Task100ms(void)
-{
-  ErrorHandler.Cyclic();
-
-  // ui32 seconds = cSysTick::Millis() / 1000ULL;
-  // cCan1::TransmitNumber(seconds);
-
-  volatile ui32 MessageAddr = (ui32)&Rx_MsgTimeStamp;
-  volatile ui32 Identifier = Rx_MsgTimeStamp.GetIdentifier();
-
-  volatile ui32 ID0 = DESIG_UNIQUE_ID0;
-  volatile ui32 ID1 = DESIG_UNIQUE_ID1;
-  volatile ui32 ID2 = DESIG_UNIQUE_ID2;
-
-  Tx_UniqueIdentifier0.StoreData(ID0);
-  Tx_UniqueIdentifier1.StoreData(ID1);
-  Tx_UniqueIdentifier2.StoreData(ID2);
-
-  Tx_MsgUniqueIdentifier0.Transmit();
-  Tx_MsgUniqueIdentifier1.Transmit();
-
-  Rx_TimeSeconds.FetchData();
-  volatile ui32 Seconds = Rx_TimeSeconds.Get();
-}
-#endif
 
 void Task1000ms(void)
 {
-  gpio_toggle(LED_PORT, LED_PIN);
 }

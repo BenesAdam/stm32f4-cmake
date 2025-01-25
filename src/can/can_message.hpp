@@ -54,6 +54,9 @@ public:
   static void IrqReceive(const sObjectReceived& arg_obj);
 
   ui32 GetIdentifier(void) const;
+  bool IsReceived(void) const;
+  void ResetReceived(void);
+
   void GetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data) const;
   void SetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data);
 

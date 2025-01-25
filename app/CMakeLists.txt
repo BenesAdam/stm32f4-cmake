@@ -13,6 +13,10 @@ target_link_libraries(firmware
     can
 )
 
+add_opt_define(
+    ECU_NEW=0
+)
+
 set(LINKER_SCRIPT_FILE ${PROJECT_SOURCE_DIR}/linker/${PLATFORM_FULL_NAME_UPPER_CASE}.ld)
 set(MAP_FILE ${CMAKE_CURRENT_BINARY_DIR}/firmware.map)
 
