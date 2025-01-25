@@ -14,3 +14,35 @@ cCanSignal Rx_TimeSeconds(
   0U,
   4U
 );
+
+cCanMessage Tx_MsgUniqueIdentifier0(
+  cCanMessage::eDirection::Transmit,
+  cCanMessage::eFormat::Standard,
+  0xA0,
+  8U
+);
+
+cCanMessage Tx_MsgUniqueIdentifier1(
+  cCanMessage::eDirection::Transmit,
+  cCanMessage::eFormat::Standard,
+  0xA1,
+  4U
+);
+
+cCanSignal Tx_UniqueIdentifier0(
+  &Tx_MsgUniqueIdentifier0,
+  0U,
+  4U
+);
+
+cCanSignal Tx_UniqueIdentifier1(
+  &Tx_MsgUniqueIdentifier0,
+  4U,
+  4U
+);
+
+cCanSignal Tx_UniqueIdentifier2(
+  &Tx_MsgUniqueIdentifier1,
+  0U,
+  4U
+);

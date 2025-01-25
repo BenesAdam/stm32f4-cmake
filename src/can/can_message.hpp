@@ -55,6 +55,7 @@ public:
 
   ui32 GetIdentifier(void) const;
   void GetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data) const;
+  void SetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data);
 
   static sMessageList RxMessageList;
   static sMessageList TxMessageList;

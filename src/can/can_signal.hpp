@@ -7,13 +7,14 @@
 class cCanSignal
 {
 public:
-  cCanSignal(const cCanMessage *const arg_message, const ui8 arg_byteIndex, const ui8 arg_size);
+  cCanSignal(cCanMessage* const arg_message, const ui8 arg_byteIndex, const ui8 arg_size);
 
   void FetchData(void);
   ui32 Get(void);
+  void StoreData(const ui32 arg_data);
 
 private:
-  const cCanMessage* message;
+  cCanMessage* const message;
   ui8 byteIndex;
   ui8 size;
   ui32 data;

@@ -89,3 +89,13 @@ void cCanMessage::GetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_
 
   memcpy(arg_data, data + arg_byteIndex, arg_size);
 }
+
+void cCanMessage::SetData(const ui8 arg_byteIndex, const ui8 arg_size, ui8* arg_data)
+{
+  if ((arg_byteIndex >= dataSize) || ((arg_byteIndex + arg_size) > dataSize))
+  {
+    return;
+  }
+
+  memcpy(data + arg_byteIndex, arg_data, arg_size);
+}

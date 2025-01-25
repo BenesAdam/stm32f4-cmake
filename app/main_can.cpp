@@ -77,6 +77,17 @@ void Task100ms(void)
   volatile ui32 MessageAddr = (ui32)&Rx_MsgTimeStamp;
   volatile ui32 Identifier = Rx_MsgTimeStamp.GetIdentifier();
 
+  volatile ui32 ID0 = DESIG_UNIQUE_ID0;
+  volatile ui32 ID1 = DESIG_UNIQUE_ID1;
+  volatile ui32 ID2 = DESIG_UNIQUE_ID2;
+
+  Tx_UniqueIdentifier0.StoreData(ID0);
+  Tx_UniqueIdentifier1.StoreData(ID1);
+  Tx_UniqueIdentifier2.StoreData(ID2);
+
+  Tx_MsgUniqueIdentifier0.Transmit();
+  Tx_MsgUniqueIdentifier1.Transmit();
+
   Rx_TimeSeconds.FetchData();
   volatile ui32 Seconds = Rx_TimeSeconds.Get();
 }
