@@ -6,14 +6,25 @@ extern "C"
 #include <libopencm3/cm3/nvic.h>
 }
 
+#include "types.h"
 #include "systick.hpp"
+#include "noinit_vars.hpp"
 
-void InitTimers(void);
+void InitTimers(const ui32 arg_freqInHz);
 
 int main(void)
 {
+  nsNoinitVars::InitializeOnColdStart();
   cSysTick::Setup();
-  InitTimers();
+
+  ui32 frequencies[] = {100U, 200U, 300U, 500U, 700U, 1000U, 1200};
+  const ui8 size = sizeof(frequencies) / sizeof(frequencies[0U]);
+  const ui8 index = nsNoinitVars::ResetCount % size;
+  volatile ui32 frequency = frequencies[index];
+
+  InitTimers(frequency);
+
+  nsNoinitVars::ResetCount++;
 
   while (true)
   {
@@ -34,12 +45,14 @@ extern "C" void tim2_isr(void)
   }
 }
 
-void InitTimers(void)
+void InitTimers(const ui32 arg_freqInHz)
 {
+  const ui32 period = (1000000U / arg_freqInHz);
+
   // TIM2 -> interrupt every 2ms (500Hz)
   rcc_periph_clock_enable(RCC_TIM2);
   timer_set_prescaler(TIM2, 95);
-  timer_set_period(TIM2, 1999);
+  timer_set_period(TIM2, period - 1U);
   timer_enable_irq(TIM2, TIM_DIER_UIE);
   nvic_enable_irq(NVIC_TIM2_IRQ);
   nvic_set_priority(NVIC_TIM2_IRQ, 2);

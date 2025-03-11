@@ -3,6 +3,7 @@ target_link_libraries(firmware
     libopencm3
     common
     systick
+    noinit_vars
 )
 
 set(LINKER_SCRIPT_FILE ${PROJECT_SOURCE_DIR}/linker/${PLATFORM_FULL_NAME_UPPER_CASE}.ld)
