@@ -3,7 +3,7 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true
   },
-  "cortex-debug.variableUseNaturalFormat": true,
+  "cortex-debug.variableUseNaturalFormat": false,
   "cmake.buildDirectory": "${workspaceFolder}/build/ut",
   "cmake.deleteBuildDirOnCleanConfigure": true,
   "cmake.debugConfig": {

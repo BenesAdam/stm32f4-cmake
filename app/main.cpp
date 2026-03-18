@@ -1,22 +1,21 @@
-#include "systick.hpp"
-#include "noinit_vars.hpp"
-#include "errorhandler_inst.hpp"
+#include "types.h"
+#include "header_checker.hpp"
 
-extern "C"
-{
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
-}
+volatile bool startApp = true;
 
 int main(void)
 {
-  nsNoinitVars::ResetCount++;
-  nsNoinitVars::InitializeOnColdStart();
-  cSysTick::Setup();
-
-  while (true)
+  while (!startApp) {}
+  if (HeaderChecker.FindApplication())
   {
-    ErrorHandler.Cyclic();
+    if (HeaderChecker.CheckApplicationHeader())
+    {
+      cHeaderChecker::RunApplication();
+    }
+  }
+  else
+  {
+    while (true) {}
   }
 
   return 0;

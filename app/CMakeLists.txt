@@ -1,20 +1,16 @@
-add_executable(firmware main.cpp)
-target_link_libraries(firmware
-    bitset
+add_executable(${APP_NAME} main.cpp)
+target_link_libraries(${APP_NAME}
     libopencm3
     common
-    display
-    i2c
-    map
-    reset
-    systick
-    errorhandler
+    header
 )
 
 set(LINKER_SCRIPT_FILE ${PROJECT_SOURCE_DIR}/linker/${PLATFORM_FULL_NAME_UPPER_CASE}.ld)
-set(MAP_FILE ${CMAKE_CURRENT_BINARY_DIR}/firmware.map)
+set(MAP_FILE ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}.map)
 
-target_link_options(firmware PRIVATE
+target_link_options(${APP_NAME} PRIVATE
     -T "${LINKER_SCRIPT_FILE}"
-    -Wl,-Map=${MAP_FILE},--print-memory-usage
+    -Wl,-Map=${MAP_FILE}
 )
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/../cmake/HexGeneration.cmake")
