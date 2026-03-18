@@ -19,7 +19,8 @@
 
 MEMORY
 {
-  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K
+  FLASH_HDR (rx) : ORIGIN = 0x08010000, LENGTH = 1K
+  FLASH (rx) : ORIGIN = 0x08010400, LENGTH = 447K
   RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
@@ -100,6 +101,22 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;
   } > RAM
+
+  /*
+   * Put one byte 0xFF on the end of address for gap fill for cybersecurity
+   */
+  .flash_end ORIGIN(FLASH) + LENGTH(FLASH) - 1 :
+  {
+    BYTE(0xFF);
+  } > FLASH
+
+  /* Fill with 0xFF for header (0x08010000 - 0x08010400) */
+  .header_gap :
+  {
+    FILL(0xFF);
+    BYTE(0xFF);
+    . = . + 0x3FF;
+  } > FLASH_HDR
 
   /*
    * The .eh_frame section appears to be used for C++ exception handling.

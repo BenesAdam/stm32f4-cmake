@@ -64,13 +64,13 @@ default: help
 # >----------------------------------------------------------------------------
 remove:
 	@echo "Removing files in build folder..."
-	@rm -rf build/* build/.*
+	@rm -rf build/* build/.[!.]* build/.??*
 	@echo "Build folder cleaned."
 
 # >----------------------------------------------------------------------------
 remove_all: remove
 	@echo "Removing files in external/libopencm3 folder..."
-	@rm -rf external/libopencm3/* external/libopencm3/.*
+	@rm -rf external/libopencm3/* external/libopencm3/.[!.]* external/libopencm3/.??*
 	@echo "External libopencm3 folder cleaned."
 
 # >----------------------------------------------------------------------------
