@@ -102,6 +102,14 @@ SECTIONS
   } > RAM
 
   /*
+   * Put one byte 0xFF on the end of address for gap fill for cybersecurity
+   */
+  .flash_end ORIGIN(FLASH) + LENGTH(FLASH) - 1 :
+  {
+    BYTE(0xFF);
+  } > FLASH
+
+  /*
    * The .eh_frame section appears to be used for C++ exception handling.
    * You may need to fix this if you're using C++.
    */
