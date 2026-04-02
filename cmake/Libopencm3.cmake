@@ -35,7 +35,13 @@ set(LIBOPENCM3_PARSED_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/${LIBOPENCM3_PARSED_S
 file(RELATIVE_PATH BINARY_RELATIVE_DIR "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}")
 
 # --- Precompilation settings
-set(PRECOMPILED_DIR "${PROJECT_SOURCE_DIR}/precompiled/${PLATFORM_LOWER_CASE}")
+if (WIN32)
+    set(PRECOMPILED_PLATFORM "windows")
+else()
+    set(PRECOMPILED_PLATFORM "linux")
+endif()
+
+set(PRECOMPILED_DIR "${PROJECT_SOURCE_DIR}/precompiled/${PRECOMPILED_PLATFORM}/${PLATFORM_LOWER_CASE}")
 set(PRECOMPILED_FILES
     "${LIBOPENCM3_RELATIVE_DIR}/lib/${PLATFORM_FOLDER_LOWER_CASE}/vector_nvic.c"
     "${LIBOPENCM3_RELATIVE_DIR}/include/libopencmsis/${PLATFORM_FOLDER_LOWER_CASE}/irqhandlers.h"
@@ -60,41 +66,69 @@ endif()
 # --- Build libopencm3
 set(LIBOPENCM3_MAKE_BUILD (${ENABLE_LIBOPENCM3_STORE_PRECOMPILED} OR NOT EXISTS ${LIBOPENCM3_LIBRARY}))
 if(${LIBOPENCM3_MAKE_BUILD})
-    # --- Find MSYS sh.exe
-    find_program(SH_EXECUTABLE NAMES sh.exe)
-    if(NOT SH_EXECUTABLE)
-          message(FATAL_ERROR "MSYS - sh.exe not found.")
-    endif()
-    message(STATUS "MSYS - sh.exe: ${SH_EXECUTABLE}")
-
-    # --- Set compiler path
-    cmake_path(GET CMAKE_C_COMPILER PARENT_PATH CMAKE_C_COMPILER_DIR)
-    if(NOT CMAKE_C_COMPILER_DIR)
-        message(FATAL_ERROR "MSYS - CMAKE_C_COMPILER is not set or invalid.")
-    endif()
-    string(REGEX REPLACE "C:/" "/c//" MSYS_CMAKE_C_COMPILER_DIR ${CMAKE_C_COMPILER_DIR})
-    message(STATUS "MSYS - CMAKE_C_COMPILER: ${MSYS_CMAKE_C_COMPILER_DIR}")
-
-    # --- Find python3.exe
-    find_program(PYTHON_EXECUTABLE NAMES python3.exe)
-    if(NOT PYTHON_EXECUTABLE)
-        message(FATAL_ERROR "MSYS - python3.exe not found.")
-    endif()
-    get_filename_component(PYTHON_DIR ${PYTHON_EXECUTABLE} DIRECTORY)
-    string(REGEX REPLACE "C:/" "/c//" MSYS_PYTHON_DIR ${PYTHON_DIR})
-    message(STATUS "MSYS - python3.exe: ${MSYS_PYTHON_DIR}")
-
-    # --- Build using MSYS shell
     set(LIBOPENCM3_TARGET ${PLATFORM_FOLDER_LOWER_CASE})
-    message(STATUS "Libopencm3 ${LIBOPENCM3_TARGET} building...")
-    execute_process(
-        COMMAND ${SH_EXECUTABLE} -c 'export PATH=\"${MSYS_PYTHON_DIR}:${MSYS_CMAKE_C_COMPILER_DIR}:\$PATH\" && make -j4 TARGETS=${LIBOPENCM3_TARGET} CC=arm-none-eabi-gcc AR=arm-none-eabi-ar && make TARGETS=${LIBOPENCM3_TARGET} -p > ${LIBOPENCM3_MAKE_DATABASE}'
-        WORKING_DIRECTORY ${LIBOPENCM3_SOURCE_DIR}
-        RESULT_VARIABLE result
-    )
-    if(result)
-        message(FATAL_ERROR "Failed to build: ${LIBOPENCM3_SOURCE_DIR}")
+    if (WIN32)
+        # Windows
+        # --- Find MSYS sh.exe
+        find_program(SH_EXECUTABLE NAMES sh.exe)
+        if(NOT SH_EXECUTABLE)
+              message(FATAL_ERROR "MSYS - sh.exe not found.")
+        endif()
+        message(STATUS "MSYS - sh.exe: ${SH_EXECUTABLE}")
+
+        # --- Set compiler path
+        cmake_path(GET CMAKE_C_COMPILER PARENT_PATH CMAKE_C_COMPILER_DIR)
+        if(NOT CMAKE_C_COMPILER_DIR)
+            message(FATAL_ERROR "MSYS - CMAKE_C_COMPILER is not set or invalid.")
+        endif()
+        string(REGEX REPLACE "C:/" "/c//" MSYS_CMAKE_C_COMPILER_DIR ${CMAKE_C_COMPILER_DIR})
+        message(STATUS "MSYS - CMAKE_C_COMPILER: ${MSYS_CMAKE_C_COMPILER_DIR}")
+
+        # --- Find python3.exe
+        find_program(PYTHON_EXECUTABLE NAMES python3.exe)
+        if(NOT PYTHON_EXECUTABLE)
+            message(FATAL_ERROR "MSYS - python3.exe not found.")
+        endif()
+        get_filename_component(PYTHON_DIR ${PYTHON_EXECUTABLE} DIRECTORY)
+        string(REGEX REPLACE "C:/" "/c//" MSYS_PYTHON_DIR ${PYTHON_DIR})
+        message(STATUS "MSYS - python3.exe: ${MSYS_PYTHON_DIR}")
+
+        # --- Build using MSYS shell
+        message(STATUS "Libopencm3 ${LIBOPENCM3_TARGET} building...")
+        execute_process(
+            COMMAND ${SH_EXECUTABLE} -c 'export PATH=\"${MSYS_PYTHON_DIR}:${MSYS_CMAKE_C_COMPILER_DIR}:\$PATH\" && make -j4 TARGETS=${LIBOPENCM3_TARGET} CC=arm-none-eabi-gcc AR=arm-none-eabi-ar && make TARGETS=${LIBOPENCM3_TARGET} -p > ${LIBOPENCM3_MAKE_DATABASE}'
+            WORKING_DIRECTORY ${LIBOPENCM3_SOURCE_DIR}
+            RESULT_VARIABLE result
+        )
+        if(result)
+            message(FATAL_ERROR "Failed to build: ${LIBOPENCM3_SOURCE_DIR}")
+        endif()
+    else()
+        # Linux
+        # Build via make
+        message(STATUS "Libopencm3 ${LIBOPENCM3_TARGET} building...")
+        execute_process(
+            COMMAND make TARGETS=${LIBOPENCM3_TARGET}
+            WORKING_DIRECTORY ${LIBOPENCM3_SOURCE_DIR}
+            RESULT_VARIABLE result
+        )
+        if(result)
+            message(FATAL_ERROR "Failed to build: ${LIBOPENCM3_SOURCE_DIR}")
+        endif()
+
+        # Create Libopencm3 make database
+        message(STATUS "Libopencm3 ${LIBOPENCM3_TARGET} create make database...")
+        execute_process(
+            COMMAND make TARGETS=${LIBOPENCM3_TARGET} -p
+            OUTPUT_FILE ${LIBOPENCM3_MAKE_DATABASE}
+            WORKING_DIRECTORY ${LIBOPENCM3_SOURCE_DIR}
+            RESULT_VARIABLE result
+        )
+        if(result)
+            message(FATAL_ERROR "Failed to build: ${LIBOPENCM3_SOURCE_DIR}")
+        endif()
     endif()
+
     message(STATUS "Libopencm3 ${LIBOPENCM3_TARGET} building - done")
 
     # --- Find current dir of libopencm3 target
@@ -109,7 +143,7 @@ if(${LIBOPENCM3_MAKE_BUILD})
     file(STRINGS ${LIBOPENCM3_MAKE_DATABASE} LIBOPENCM3_OBJECT_FILES REGEX "OBJS = (.*)")
     string(REPLACE "OBJS = " "" LIBOPENCM3_OBJECT_FILES ${LIBOPENCM3_OBJECT_FILES})
     string(REPLACE " " ";" LIBOPENCM3_OBJECT_FILES ${LIBOPENCM3_OBJECT_FILES})
-    
+
     # --- Find dependencies for all object files
     set(LIBOPENCM3_SOURCES)
     foreach(OBJECT_FILE IN LISTS LIBOPENCM3_OBJECT_FILES)
@@ -138,7 +172,7 @@ if(${LIBOPENCM3_MAKE_BUILD})
             message(STATUS "  * ${PRECOMPILED_FILE}")
             configure_file("${PROJECT_SOURCE_DIR}/${PRECOMPILED_FILE}" "${PRECOMPILED_DIR}/${PRECOMPILED_FILE}" COPYONLY)
         endforeach()
-    
+
         # Libopencm3 parsed sources
         message(STATUS "  * ${LIBOPENCM3_PARSED_SOURCES_FILE}")
         configure_file(${LIBOPENCM3_PARSED_SOURCES} "${PRECOMPILED_DIR}/${LIBOPENCM3_PARSED_SOURCES_FILE}" COPYONLY)
