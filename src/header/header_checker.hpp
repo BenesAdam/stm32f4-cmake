@@ -7,19 +7,23 @@
 class cHeaderChecker
 {
 public:
-    cHeaderChecker(void);
-    bool FindApplication(void);
-    bool CheckApplicationHeader(void);
-    static void RunApplication(void) __attribute__((noreturn));
+  cHeaderChecker(void);
+  void CheckApplication(void);
+  bool IsAppValidated(void);
+  static void RunApplication(void) __attribute__((noreturn));
 
 private:
-    static ui32 HeaderAddress;
-    sHeader* Header;
-    ui8 Hash[32U];
-    ui8 Hash_from_sig[32U];
+  bool FindApplication(void);
+  bool CheckSignature(void);
+  static ui32 HeaderAddress;
+  sHeader* Header;
+  ui8 Hash[32U];
+  ui8 Hash_from_sig[32U];
+  bool AppFounded;
+  bool SignitureRight;
+  ui32 AppRuntime;
 };
 
 extern cHeaderChecker HeaderChecker;
-
 
 #endif // #ifndef HEADER_CHECKER_HPP

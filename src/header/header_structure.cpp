@@ -1,6 +1,5 @@
 #include "header_structure.hpp"
 
-
 sCheckMemory CheckMemory = 
 {{
     {0x08010000U, 0x0807FFFFU},
@@ -9,3 +8,4 @@ sCheckMemory CheckMemory =
     {0U, 0U},
     {0U, 0U}
 }};
+

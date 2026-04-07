@@ -1,21 +1,19 @@
 #include "types.h"
+#include "systick.hpp"
 #include "header_checker.hpp"
 
-volatile bool startApp = true;
+volatile ui32 startApp = 0x55AA55AAU;
 
 int main(void)
 {
-  while (!startApp) {}
-  if (HeaderChecker.FindApplication())
+  while (startApp != 0x55AA55AAU) {}
+  
+  cSysTick::Setup();
+  HeaderChecker.CheckApplication();
+
+  if (HeaderChecker.IsAppValidated())
   {
-    if (HeaderChecker.CheckApplicationHeader())
-    {
-      cHeaderChecker::RunApplication();
-    }
-  }
-  else
-  {
-    while (true) {}
+    HeaderChecker.RunApplication();
   }
 
   return 0;

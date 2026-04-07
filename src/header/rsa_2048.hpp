@@ -1,8 +1,6 @@
 #ifndef RSA_2048_HPP
 #define RSA_2048_HPP
 
-#include <stdint.h>
-#include <string.h>
 #include "types.h"
 #include "header_structure.hpp"
 

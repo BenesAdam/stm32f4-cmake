@@ -34,10 +34,7 @@
       "interface": "swd",
       "runToEntryPoint": "main",
       "showDevDebugOutput": "raw",
-      "preLaunchTask": "build_and_flash",
-      "env": {
-        "HEX_FILE": "@LAUNCH_HEX_FILE@"
-      }
+      "preLaunchTask": "build_and_flash"
     },
     {
       "name": "ST-Link: Attach to active",
